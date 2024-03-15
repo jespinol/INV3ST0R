@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 
-<head th:replace="fragments :: head"></head>
+<head th:replace="~{fragments :: head}"></head>
 
 <body id="page-top">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <div th:replace="fragments :: sidebar"></div>
+    <div th:replace="~{fragments :: sidebar}"></div>
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -16,7 +16,7 @@
         <!-- Main Content -->
         <div id="content">
 
-            <div th:replace="fragments :: topbar"></div>
+            <div th:replace="~{fragments :: topbar}"></div>
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
@@ -161,106 +161,8 @@
                 <div>
                     <h4>Recent transactions</h4>
                 </div>
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Account 1</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Symbol</th>
-                                    <th>Name</th>
-                                    <th>Quantity</th>
-                                    <th>Cost basis</th>
-                                    <th>Last price</th>
-                                    <th>Total gain/loss</th>
-                                </tr>
-                                <tbody>
-                                <tr>
-                                    <th>01/01/01</th>
-                                    <td>AAPL</td>
-                                    <td>Apple, Inc.</td>
-                                    <td>10</td>
-                                    <td>$100.00</td>
-                                    <td>$101.00</td>
-                                    <td>$1.00</td>
-                                </tr>
-                                <tr>
-                                    <th>01/01/01</th>
-                                    <td>GOOGL</td>
-                                    <td>Alphabet, Inc.</td>
-                                    <td>5</td>
-                                    <td>$1000.00</td>
-                                    <td>$1010.00</td>
-                                    <td>$50.00</td>
-                                </tr>
-                                <tr>
-                                    <th>01/01/01</th>
-                                    <td>AMZN</td>
-                                    <td>Amazon.com, Inc.</td>
-                                    <td>2</td>
-                                    <td>$2000.00</td>
-                                    <td>$2010.00</td>
-                                    <td>$20.00</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Account 2</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Symbol</th>
-                                    <th>Name</th>
-                                    <th>Quantity</th>
-                                    <th>Cost basis</th>
-                                    <th>Last price</th>
-                                    <th>Total gain/loss</th>
-                                </tr>
-                                <tbody>
-                                <tr>
-                                    <th>01/01/01</th>
-                                    <td>AAPL</td>
-                                    <td>Apple, Inc.</td>
-                                    <td>10</td>
-                                    <td>$100.00</td>
-                                    <td>$101.00</td>
-                                    <td>$1.00</td>
-                                </tr>
-                                <tr>
-                                    <th>01/01/01</th>
-                                    <td>GOOGL</td>
-                                    <td>Alphabet, Inc.</td>
-                                    <td>5</td>
-                                    <td>$1000.00</td>
-                                    <td>$1010.00</td>
-                                    <td>$50.00</td>
-                                </tr>
-                                <tr>
-                                    <th>01/01/01</th>
-                                    <td>AMZN</td>
-                                    <td>Amazon.com, Inc.</td>
-                                    <td>2</td>
-                                    <td>$2000.00</td>
-                                    <td>$2010.00</td>
-                                    <td>$20.00</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <div th:replace="~{fragments :: txns-table-few}"></div>
+                <div th:replace="~{fragments :: txns-table-few}"></div>
 
             </div>
             <!-- /.container-fluid -->
@@ -268,7 +170,7 @@
         </div>
         <!-- End of Main Content -->
 
-        <div th:replace="fragments :: footer"></div>
+        <div th:replace="~{fragments :: footer}"></div>
 
     </div>
     <!-- End of Content Wrapper -->
@@ -276,26 +178,13 @@
 </div>
 <!-- End of Page Wrapper -->
 
-<div th:replace="fragments :: scroll-to-top"></div>
+<div th:replace="~{fragments :: scroll-to-top}"></div>
 
-<div th:replace="fragments :: logout-modal"></div>
+<div th:replace="~{fragments :: logout-modal}"></div>
 
-<!-- Bootstrap core JavaScript-->
-<script src="../static/vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>
-<script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js" th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="../static/vendor/jquery-easing/jquery.easing.min.js" th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="../static/js/sb-admin-2.min.js" th:src="@{/js/sb-admin-2.min.js}"></script>
-
-<!-- Page level plugins -->
-<script src="../static/vendor/chart.js/Chart.min.js" th:src="@{/vendor/chart.js/Chart.min.js}"></script>
-
-<!-- Page level custom scripts -->
-<script src="../static/js/demo/chart-area-demo.js" th:src="@{/js/demo/chart-area-demo.js}"></script>
-<script src="../static/js/demo/chart-pie-demo.js" th:src="@{/js/demo/chart-pie-demo.js}"></script>
+<div th:replace="~{fragments :: js-core}"></div>
+<div th:replace="~{fragments :: js-chart}"></div>
+<div th:replace="~{fragments :: js-table}"></div>
 
 </body>
 
