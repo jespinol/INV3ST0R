@@ -1,6 +1,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 
 <head th:fragment="head">
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,13 +20,18 @@
     <!-- Custom styles for this template-->
     <link href="../static/css/sb-admin-2.min.css" th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
 
+    <link href="../static/vendor/datatables/dataTables.bootstrap4.min.css"
+          th:href="@{/vendor/datatables/dataTables.bootstrap4.min.css}" rel="stylesheet">
+
 </head>
+
 <body>
-<!-- Sidebar -->
+
+<!-- Page elements -->
 <ul th:fragment="sidebar" class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.html" th:href="@{/home}">
         <div class="sidebar-brand-icon text-lg">$</div>
         <div class="sidebar-brand-text mx-3">INV3ST0R</div>
     </a>
@@ -36,7 +42,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="home.html">
+        <a class="nav-link" href="home.html" th:href="@{/home}">
             <i class="fas fa-fw fa-home"></i>
             <span>Home</span></a>
     </li>
@@ -60,7 +66,7 @@
         </a>
         <div id="collapseAccountOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="overview.html">Overview</a>
+                <a class="collapse-item" href="overview.html" th:href="@{/overview}">Overview</a>
                 <a class="collapse-item" href="#">Buy</a>
                 <a class="collapse-item" href="#">Sell</a>
             </div>
@@ -132,7 +138,6 @@
 
 </ul>
 
-<!-- Topbar -->
 <nav th:fragment="topbar" class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
     <!-- Sidebar Toggle (Topbar) -->
@@ -142,6 +147,36 @@
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">John Doe</span>
+                <img class="img-profile rounded-circle"
+                     src="../static/img/undraw_profile.svg"
+                     th:src="@{/img/undraw_profile.svg}" alt="">
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                 aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Profile
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Settings
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Logout
+                    </a>
+                </a>
+            </div>
+        </li>
+
+        <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - Alerts -->
         <li class="nav-item dropdown no-arrow mx-1">
@@ -194,57 +229,184 @@
             </div>
         </li>
 
-        <div class="topbar-divider d-none d-sm-block"></div>
-
-        <!-- Nav Item - User Information -->
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                <img class="img-profile rounded-circle"
-                     src="../static/img/undraw_profile.svg"
-                     th:src="@{/img/undraw_profile.svg}" alt="">
-            </a>
-            <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Logout
-                    </a>
-            </div>
-        </li>
-
     </ul>
 
 </nav>
 
-<!-- Footer -->
 <footer th:fragment="footer" class="sticky-footer bg-white">
+
     <div class="container my-auto">
         <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Jose M. Espinola Lopez 2024</span>
+            <span>Copyright &copy; 2024 <a href="https://github.com/jespinol" target="_blank" rel="noreferrer"
+                                           style="text-decoration: none">Jose M. Espinola Lopez</a> </span>
         </div>
     </div>
+
 </footer>
 
-<!-- Scroll to Top Button-->
 <a th:fragment="scroll-to-top" class="scroll-to-top rounded" href="#page-top">
+
     <i class="fas fa-angle-up"></i>
+
 </a>
 
-<!-- Logout Modal-->
+<!-- Scripts-->
+<div th:fragment="js-core">
+
+    <!-- JavaScript-->
+    <script src="../static/vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script src="../static/vendor/jquery-easing/jquery.easing.min.js"
+            th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Bootstrap -->
+    <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"
+            th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="../static/js/sb-admin-2.min.js" th:src="@{/js/sb-admin-2.min.js}"></script>
+
+</div>
+
+<div th:fragment="js-table">
+
+    <script src="vendor/datatables/jquery.dataTables.min.js"
+            th:src="@{vendor/datatables/jquery.dataTables.min.js}"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"
+            th:src="@{vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+    <script src="js/demo/datatables-demo.js" th:src="@{/js/demo/datatables-demo.js}"></script>
+
+</div>
+
+<div th:fragment="js-chart">
+
+    <script src="../static/vendor/chart.js/Chart.min.js" th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+    <script src="../static/js/demo/chart-area-demo.js" th:src="@{/js/demo/chart-area-demo.js}"></script>
+    <script src="../static/js/demo/chart-pie-demo.js" th:src="@{/js/demo/chart-pie-demo.js}"></script>
+
+</div>
+
+<!-- Transaction tables -->
+<div th:fragment="txns-table-few" class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Account X</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Cost basis</th>
+                    <th>Last price</th>
+                    <th>Total gain/loss</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>01/01/01</th>
+                    <td>AAPL</td>
+                    <td>Apple, Inc.</td>
+                    <td>10</td>
+                    <td>$100.00</td>
+                    <td>$101.00</td>
+                    <td>$1.00</td>
+                </tr>
+                <tr>
+                    <th>01/01/01</th>
+                    <td>GOOGL</td>
+                    <td>Alphabet, Inc.</td>
+                    <td>5</td>
+                    <td>$1000.00</td>
+                    <td>$1010.00</td>
+                    <td>$50.00</td>
+                </tr>
+                <tr>
+                    <th>01/01/01</th>
+                    <td>AMZN</td>
+                    <td>Amazon.com, Inc.</td>
+                    <td>2</td>
+                    <td>$2000.00</td>
+                    <td>$2010.00</td>
+                    <td>$20.00</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="txns-table-full">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All transactions</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Cost basis</th>
+                        <th>Last price</th>
+                        <th>Total gain/loss</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Date</th>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Cost basis</th>
+                        <th>Last price</th>
+                        <th>Total gain/loss</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    <tr>
+                        <th>01/01/01</th>
+                        <td>AAPL</td>
+                        <td>Apple, Inc.</td>
+                        <td>10</td>
+                        <td>$100.00</td>
+                        <td>$101.00</td>
+                        <td>$1.00</td>
+                    </tr>
+                    <tr>
+                        <th>01/01/01</th>
+                        <td>GOOGL</td>
+                        <td>Alphabet, Inc.</td>
+                        <td>5</td>
+                        <td>$1000.00</td>
+                        <td>$1010.00</td>
+                        <td>$50.00</td>
+                    </tr>
+                    <tr>
+                        <th>01/01/01</th>
+                        <td>AMZN</td>
+                        <td>Amazon.com, Inc.</td>
+                        <td>2</td>
+                        <td>$2000.00</td>
+                        <td>$2010.00</td>
+                        <td>$20.00</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals-->
 <div th:fragment="logout-modal" class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -253,7 +415,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-body">Select "Logout" below to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 <a class="btn btn-primary" href="#">Logout</a>
@@ -261,4 +423,5 @@
         </div>
     </div>
 </div>
+
 </body>
