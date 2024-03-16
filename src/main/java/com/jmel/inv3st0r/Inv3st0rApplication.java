@@ -7,8 +7,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Date;
 
-//@SpringBootApplication
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication
 public class Inv3st0rApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(Inv3st0rApplication.class, args);
