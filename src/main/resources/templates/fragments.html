@@ -58,35 +58,24 @@
     </div>
 
     <!-- Accounts -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAccountOne"
-           aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-arrow-alt-circle-down"></i>
-            <span>Account 1</span>
-        </a>
-        <div id="collapseAccountOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="overview.html" th:href="@{/overview}">Overview</a>
-                <a class="collapse-item" href="#">Buy</a>
-                <a class="collapse-item" href="#">Sell</a>
+    <tr th:each="account : ${accounts}">
+        <li class="nav-item">
+            <a th:attr="data-target='#collapseAccount'+${account.getId()}, aria-controls='collapse'+${account.getId()}" class="nav-link collapsed" href="#" data-toggle="collapse" aria-expanded="true">
+                <i class="fas fa-fw fa-arrow-alt-circle-down"></i>
+                <span>[[${account.getAccountName()}]]</span>
+            </a>
+            <div th:attr="id='collapseAccount'+${account.getId()}, aria-labelledby='heading'+${account.getId()}" class="collapse" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="#">Buy</a>
+                    <a class="collapse-item" href="#">Sell</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="collapse-item" href="overview.html"
+                       th:href="@{'/overview?account-id='+${account.getId()}}">Overview</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
+    </tr>
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAccountTwo"
-           aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-arrow-alt-circle-down"></i>
-            <span>Account 2</span>
-        </a>
-        <div id="collapseAccountTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="#">Overview</a>
-                <a class="collapse-item" href="#">Buy</a>
-                <a class="collapse-item" href="#">Sell</a>
-            </div>
-        </div>
-    </li>
 
     <!-- Divider -->
     <br>
@@ -98,40 +87,41 @@
         Misc
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Nav Item - New Accounts -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#CollapseMiscOne"
            aria-expanded="true" aria-controls="collapsePages">
             <i class="fas fa-fw fa-plus-square"></i>
-            <span>Link account</span>
+            <span>Add account</span>
         </a>
         <div id="CollapseMiscOne" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="#">New account</a>
-                <a class="collapse-item" href="#">External account</a>
+                <a class="collapse-item" href="/new-account" th:href="@{/new-account}">New account</a>
+                <a class="collapse-item" href="/new-account" th:href="@{/new-account}">External account</a>
             </div>
         </div>
     </li>
 
-    <!-- Nav Item - Charts -->
+    <!-- Nav Item - Profile -->
     <li class="nav-item">
         <a class="nav-link" href="#">
             <i class="fas fa-fw fa-user"></i>
             <span>Profile</span></a>
     </li>
 
-    <!-- Nav Item - Charts -->
+    <!-- Nav Item - Settings -->
     <li class="nav-item">
         <a class="nav-link" href="#">
             <i class="fas fa-fw fa-cogs"></i>
             <span>Settings</span></a>
     </li>
 
-    <!-- Nav Item - Tables -->
+    <!-- Nav Item - Log out -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
             <i class="fas fa-fw fa-sign-out-alt"></i>
-            <span>Log out</span></a>
+            Logout
+        </a>
     </li>
 
     <hr class="sidebar-divider d-none d-md-block">
@@ -147,36 +137,6 @@
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
-
-        <!-- Nav Item - User Information -->
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small" sec:authentication="principal.fullName"></span>
-                <img class="img-profile rounded-circle"
-                     src="../static/img/undraw_profile.svg"
-                     th:src="@{/img/undraw_profile.svg}" alt="">
-            </a>
-            <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
-                </a>
-            </div>
-        </li>
-
-        <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - Alerts -->
         <li class="nav-item dropdown no-arrow mx-1">
@@ -226,6 +186,36 @@
                     </div>
                 </a>
                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+            </div>
+        </li>
+
+        <div class="topbar-divider d-none d-sm-block"></div>
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small" sec:authentication="principal.fullName"></span>
+                <img class="img-profile rounded-circle"
+                     src="../static/img/undraw_profile.svg"
+                     th:src="@{/img/undraw_profile.svg}" alt="">
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                 aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Profile
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Settings
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Logout
+                </a>
             </div>
         </li>
 
