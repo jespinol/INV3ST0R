@@ -9,7 +9,7 @@ import static jakarta.persistence.GenerationType.TABLE;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy=TABLE, generator="CUST_GEN")
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true, length = 45)
