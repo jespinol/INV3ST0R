@@ -23,24 +23,28 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h1 mb-4 text-gray-800">Account 1</h1>
+                <h1 class="h1 mb-4 text-gray-800">[[${accountInfo.getAccountName()}]]</h1>
 
                 <!-- Account summary -->
                 <div>
                     <h4>Summary</h4>
                 </div>
                 <!-- Investment progress bar -->
-                <div class="card shadow mb-4">
+                <div class="card shadow mb-4" th:with="invested=${accountInfo.getInvestedBalance()}, cash=${accountInfo.getCashBalance()}">
                     <div class="card-body">
-                        <h4 class="font-weight-bold">Total balance: $900,000.00</h4>
-                        <h4 class="font-weight-bold">Available to trade: $100,000.00</h4>
+                        <h4 class="font-weight-bold">Total Balance:
+                            $[[${#numbers.formatDecimal(invested + cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                        <h4>Invested Balance: $[[${#numbers.formatDecimal(invested, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                        <h4>Cash Balance: $[[${#numbers.formatDecimal(cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+
                     </div>
                     <div class="card-body">
                         <h4 class="small font-weight-bold text-info">Invested <span
                                 class="float-right text-gray-800">Cash</span></h4>
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 90%"
-                                 aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress mb-4" th:with="percentage=${invested / (invested + cash)}">
+                            <div class="progress-bar bg-info" role="progressbar"
+                                 th:attr="style='width:'+${percentage}+'%', aria-valuenow=${percentage}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
