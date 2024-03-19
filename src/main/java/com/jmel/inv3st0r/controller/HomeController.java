@@ -1,8 +1,10 @@
 package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
+import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.model.User;
 import com.jmel.inv3st0r.repository.AccountRepository;
+import com.jmel.inv3st0r.repository.TransactionRepository;
 import com.jmel.inv3st0r.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Controller
 public class HomeController {
@@ -24,7 +27,10 @@ public class HomeController {
     @Autowired
     private AccountRepository accountRepo;
 
-    private Authentication getAuthentication() {
+    @Autowired
+    private TransactionRepository transactionRepo;
+
+    private static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
@@ -36,16 +42,22 @@ public class HomeController {
         return authentication.isAuthenticated();
     }
 
-    private Long getLoggedUserID() {
-        return userRepo.findByEmail(getAuthentication().getName()).getId();
+    public static Long getLoggedUserID(UserRepository repo) {
+        return repo.findByEmail(getAuthentication().getName()).getId();
     }
 
     @GetMapping(value = {"/", "/home", "/signing", "/login"})
     public String viewStartPage(Model model) {
         if (isAuthenticated()) {
-            ArrayList<Account> accounts = AccountController.listAccounts(accountRepo);
-
+            ArrayList<Account> accounts = AccountController.listAccounts(accountRepo, getLoggedUserID(userRepo));
             model.addAttribute("accounts", accounts);
+
+            HashMap<String, ArrayList<Transaction>> accountTransactions= new HashMap<>();
+            for (Account account : accounts) {
+                accountTransactions.put(account.getAccountName(), TransactionController.listAccountTransactions(transactionRepo, account, false));
+            }
+            model.addAttribute("accountTransactions", accountTransactions);
+
             return "/home";
         }
 

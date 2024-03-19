@@ -161,8 +161,10 @@
                 <div>
                     <h4>Recent transactions</h4>
                 </div>
-                <div th:replace="~{fragments :: txns-table-few}"></div>
-                <div th:replace="~{fragments :: txns-table-few}"></div>
+
+                <div th:each="accountTransaction : ${accountTransactions}">
+                    <div th:replace="~{fragments :: txns-table-few(account=${accountTransaction})}"></div>
+                </div>
 
             </div>
             <!-- /.container-fluid -->

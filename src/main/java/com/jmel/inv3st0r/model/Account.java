@@ -2,8 +2,6 @@ package com.jmel.inv3st0r.model;
 
 import jakarta.persistence.*;
 
-import static jakarta.persistence.GenerationType.TABLE;
-
 @Entity
 @Table(name = "accounts")
 public class Account {

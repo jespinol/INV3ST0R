@@ -276,16 +276,17 @@
 </div>
 
 <!-- Transaction tables -->
-<div th:fragment="txns-table-few" class="card shadow mb-4">
+<div th:fragment="txns-table-few(account)" class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Account X</h6>
+        <h6 class="m-0 font-weight-bold text-primary">[[${account.key}]]</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="dataTableFew" width="100%" cellspacing="0">
                 <thead>
                 <tr>
                     <th>Date</th>
+                    <th>Operation</th>
                     <th>Symbol</th>
                     <th>Name</th>
                     <th>Quantity</th>
@@ -295,32 +296,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th>01/01/01</th>
-                    <td>AAPL</td>
-                    <td>Apple, Inc.</td>
-                    <td>10</td>
-                    <td>$100.00</td>
-                    <td>$101.00</td>
-                    <td>$1.00</td>
-                </tr>
-                <tr>
-                    <th>01/01/01</th>
-                    <td>GOOGL</td>
-                    <td>Alphabet, Inc.</td>
-                    <td>5</td>
-                    <td>$1000.00</td>
-                    <td>$1010.00</td>
-                    <td>$50.00</td>
-                </tr>
-                <tr>
-                    <th>01/01/01</th>
-                    <td>AMZN</td>
-                    <td>Amazon.com, Inc.</td>
-                    <td>2</td>
-                    <td>$2000.00</td>
-                    <td>$2010.00</td>
-                    <td>$20.00</td>
+                <tr th:each="transaction : ${account.value}">
+                    <th>[[${transaction.getPurchaseDate()}]]</th>
+                    <th>[[${transaction.isOwned()}]]</th>
+                    <td>[[${transaction.getSymbol()}]]</td>
+                    <td>[[${transaction.getCompany()}]]</td>
+                    <td>[[${transaction.getQuantity()}]]</td>
+                    <td>[[${transaction.getPurchasePrice() * transaction.getQuantity()}]]</td>
+                    <td>[[${transaction.getLastCurrentPrice()}]]</td>
+                    <td>[[${(transaction.getLastCurrentPrice() - transaction.getPurchasePrice()) *
+                        transaction.getQuantity()}]]
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -335,10 +321,11 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTableAll" width="100%" cellspacing="0">
                     <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Operation</th>
                         <th>Symbol</th>
                         <th>Name</th>
                         <th>Quantity</th>
@@ -350,6 +337,7 @@
                     <tfoot>
                     <tr>
                         <th>Date</th>
+                        <th>Operation</th>
                         <th>Symbol</th>
                         <th>Name</th>
                         <th>Quantity</th>
@@ -359,32 +347,15 @@
                     </tr>
                     </tfoot>
                     <tbody>
-                    <tr>
-                        <th>01/01/01</th>
-                        <td>AAPL</td>
-                        <td>Apple, Inc.</td>
-                        <td>10</td>
-                        <td>$100.00</td>
-                        <td>$101.00</td>
-                        <td>$1.00</td>
-                    </tr>
-                    <tr>
-                        <th>01/01/01</th>
-                        <td>GOOGL</td>
-                        <td>Alphabet, Inc.</td>
-                        <td>5</td>
-                        <td>$1000.00</td>
-                        <td>$1010.00</td>
-                        <td>$50.00</td>
-                    </tr>
-                    <tr>
-                        <th>01/01/01</th>
-                        <td>AMZN</td>
-                        <td>Amazon.com, Inc.</td>
-                        <td>2</td>
-                        <td>$2000.00</td>
-                        <td>$2010.00</td>
-                        <td>$20.00</td>
+                    <tr th:each="transaction : ${transactions}">
+                        <th>[[${transaction.getPurchaseDate()}]]</th>
+                        <th>[[${transaction.isOwned()}]]</th>
+                        <td>[[${transaction.getSymbol()}]]</td>
+                        <td>[[${transaction.getCompany()}]]</td>
+                        <td>[[${transaction.getQuantity()}]]</td>
+                        <td>[[${transaction.getPurchasePrice() * transaction.getQuantity()}]]</td>
+                        <td>[[${transaction.getLastCurrentPrice()}]]</td>
+                        <td>[[${(transaction.getLastCurrentPrice() - transaction.getPurchasePrice()) * transaction.getQuantity()}]]</td>
                     </tr>
                     </tbody>
                 </table>
@@ -425,7 +396,7 @@
                 <h5 class="modal-title" id="buyModalLabel">Buy (Account X)</h5>
             </div>
             <div class="modal-body">
-                <form id="stockPurchaseForm" th:action="@{/purchaseStock}" method="post" autocomplete="off">
+                <form id="stockPurchaseForm" th:action="@{/purchase-stock}" method="post" autocomplete="off">
                     <div class="row mb-3">
                         <div class="col">
                             Cash available:

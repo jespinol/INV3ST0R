@@ -1,7 +1,6 @@
 package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
-import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
 import com.jmel.inv3st0r.repository.UserRepository;
@@ -37,8 +36,8 @@ public class AccountController {
 
         Account account = account_opt.get();
         model.addAttribute("accountInfo", account);
-        model.addAttribute("transactions", TransactionController.listAccountTransactions(transactionRepo, account));
-        model.addAttribute("accounts", listAccounts(accountRepo));
+        model.addAttribute("transactions", TransactionController.listAccountTransactions(transactionRepo, account, true));
+        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserID(userRepo)));
 
         return "/overview";
     }
@@ -46,7 +45,7 @@ public class AccountController {
     @GetMapping(value = {"/new-account"})
     public String addAccount(Model model) {
         model.addAttribute("account", new Account());
-        model.addAttribute("accounts", listAccounts(accountRepo));
+        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserID(userRepo)));
 
         return "/create-account";
     }
@@ -58,13 +57,13 @@ public class AccountController {
 
         accountRepo.save(account);
 
-        return "/overview";
+        return "redirect:/overview?account-id=" + account.getId();
     }
 
-    public static ArrayList<Account> listAccounts(AccountRepository repo) {
+    public static ArrayList<Account> listAccounts(AccountRepository repo, Long userId) {
         ArrayList<Account> accountList = new ArrayList<>();
         repo.findAll().forEach(account -> {
-            if (account.getUserID().equals(1L)) {
+            if (account.getUserID().equals(userId)) {
                 accountList.add(account);
             }
         });

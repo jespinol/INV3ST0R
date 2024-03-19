@@ -2,8 +2,6 @@ package com.jmel.inv3st0r.model;
 
 import jakarta.persistence.*;
 
-import static jakarta.persistence.GenerationType.TABLE;
-
 @Entity
 @Table(name = "transactions")
 public class Transaction {
@@ -14,8 +12,11 @@ public class Transaction {
     @Column(name="account_id", nullable = false)
     private Long accountID;
 
-    @Column(name="purchase_date", nullable = false, length = 10)
-    private String purchaseDate;
+    @Column(nullable = false)
+    private boolean owned;
+
+    @Column(name="transaction_date", nullable = false, length = 10)
+    private String transactionDate;
 
     @Column(nullable = false, length = 10)
     private String symbol;
@@ -29,14 +30,8 @@ public class Transaction {
     @Column(name="purchase_price", nullable = false)
     private double purchasePrice;
 
-    @Column(nullable = false)
-    private boolean owned;
-
     @Column(name="last_current_price")
     private double lastCurrentPrice;
-
-    @Column(name="sell_date", length = 10)
-    private String sellDate;
 
     public Long getId() {
         return id;
@@ -54,12 +49,20 @@ public class Transaction {
         this.accountID = accountID;
     }
 
-    public String getPurchaseDate() {
-        return purchaseDate;
+    public boolean isOwned() {
+        return owned;
     }
 
-    public void setPurchaseDate(String date) {
-        this.purchaseDate = date;
+    public void setOwned(boolean owned) {
+        this.owned = owned;
+    }
+
+    public String getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(String date) {
+        this.transactionDate = date;
     }
 
     public String getSymbol() {
@@ -100,21 +103,5 @@ public class Transaction {
 
     public void setLastCurrentPrice(double lastCurrentPrice) {
         this.lastCurrentPrice = lastCurrentPrice;
-    }
-
-    public boolean isOwned() {
-        return owned;
-    }
-
-    public void setOwned(boolean owned) {
-        this.owned = owned;
-    }
-
-    public String getSellDate() {
-        return sellDate;
-    }
-
-    public void setSellDate(String sellDate) {
-        this.sellDate = sellDate;
     }
 }
