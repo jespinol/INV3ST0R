@@ -1,0 +1,165 @@
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="purchaseModalLabel">Buy ([[${accountInfo.getAccountName()}]])</h5>
+        </div>
+        <div class="modal-body">
+            <form id="stockPurchaseForm" th:action="@{/purchase-stock}" th:object="${newTransaction}" method="post"
+                  autocomplete="off">
+                <div class="row mb-3">
+                    <div class="col">
+                        Cash available:
+                    </div>
+                    <div class="col">
+                        <input type="text" id="cash-available" class="form-control bg-light border-0 small"
+                               th:value="'$'+${#numbers.formatDecimal(accountInfo.getCashBalance(), 1, 'COMMA', 2, 'POINT')}"
+                               readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Symbol
+                    </div>
+                    <div class="col">
+                        <div class="input-group">
+                            <input type="text" id="stock-selector" class="form-control bg-light border-0 small"
+                                   placeholder="Search symbol" autocomplete="off">
+                            <button id="search-button" class="btn btn-primary" type="button"><i
+                                    class="fas fa-search"></i></button>
+                            <div id="stock-dropdown" class="dropdown-menu"
+                                 style="width:100%; max-height: 200px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Price Per Stock
+                    </div>
+                    <div class="col">
+                        <input type="text" id="price-per-stock" class="form-control"
+                               th:field="${newTransaction.purchasePrice}" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Quantity
+                    </div>
+                    <div class="col">
+                        <input type="number" id="quantity" name="quantity" class="form-control" min="1"
+                               oninput="calculateTotal()" th:field="${newTransaction.quantity}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Total Cost
+                    </div>
+                    <div class="col">
+                        <input type="text" id="total-cost" class="form-control" name="totalCost" readonly>
+                    </div>
+                </div>
+                <input type="hidden" id="stock-symbol" th:field="${newTransaction.symbol}">
+                <input type="hidden" id="stock-company" th:field="${newTransaction.company}">
+                <input type="hidden" id="account-id" th:field="${newTransaction.accountId}">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" type="button" id="cancel-button">Cancel</button>
+            <button type="button" class="btn btn-primary" id="buy-button">Buy</button>
+        </div>
+        <script>
+            let currentPrice = 0;
+
+            document.getElementById('stockPurchaseForm').addEventListener('keydown', function (event) {
+                if (event.code === 'Enter') {
+                    event.preventDefault();
+                } else if (event.code === 'Escape') {
+                    resetForm();
+                }
+            });
+            document.getElementById('cancel-button').addEventListener('click', resetForm);
+
+            document.getElementById('search-button').addEventListener('click', function () {
+                const input = document.getElementById('stock-selector').value;
+
+                if (input.length >= 1) {
+                    fetch(`/api/search-stock?query=${encodeURIComponent(input)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const dropdown = document.getElementById('stock-dropdown');
+                            dropdown.innerHTML = '';
+                            if (data && data.results) {
+                                data.results.forEach(stock => {
+                                    const option = document.createElement('a');
+                                    option.href = "#";
+                                    option.classList.add('dropdown-item');
+                                    option.textContent = `${stock.ticker} (${stock.name})`;
+                                    option.onclick = (e) => {
+                                        e.preventDefault();
+                                        selectStock(stock.ticker, stock.name);
+                                    };
+                                    dropdown.appendChild(option);
+                                });
+
+                                dropdown.classList.add('show');
+                            } else {
+                                dropdown.classList.remove('show');
+                            }
+                        })
+                        .catch(error => console.error('Error fetching stock data:', error));
+                }
+            });
+
+            function selectStock(symbol, name) {
+                document.getElementById('stock-selector').value = `${symbol} (${name})`;
+                document.getElementById('stock-symbol').value = symbol;
+                document.getElementById('stock-company').value = name;
+                document.getElementById('account-id').value = [[${accountInfo.getId()}]];
+
+                fetch(`/api/stock-price?symbol=${encodeURIComponent(symbol)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.results && data.results.length > 0) {
+                            currentPrice = data.results[0].c;
+                            document.getElementById('price-per-stock').value = currentPrice.toFixed(2);
+                            calculateTotal();
+                        }
+                    })
+                    .catch(error => console.error('Error fetching stock data:', error));
+
+                document.getElementById('stock-dropdown').classList.remove('show');
+            }
+
+            function calculateTotal() {
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const totalCost = quantity * currentPrice;
+                document.getElementById('total-cost').value = isNaN(totalCost) ? '' : totalCost.toFixed(2);
+            }
+
+            document.getElementById('buy-button').addEventListener('click', function () {
+                const buyButton = document.getElementById('buy-button');
+                const totalCost = parseFloat(document.getElementById('total-cost').value);
+
+                if (totalCost > 0) {
+                    if (buyButton.textContent === 'Buy') {
+                        buyButton.textContent = 'Confirm';
+                        buyButton.classList.remove('btn-primary');
+                        buyButton.classList.add('btn-success');
+                    } else if (buyButton.textContent === 'Confirm') {
+                        document.getElementById('stockPurchaseForm').submit();
+                    }
+                } else {
+                    alert('Please select a valid stock and quantity before buying.');
+                }
+            });
+
+            function resetForm() {
+                console.log("here");
+                document.getElementById('stockPurchaseForm').reset();
+                currentPrice = 0;
+                document.getElementById('total-cost').value = '';
+                document.getElementById('price-per-stock').value = '';
+                $('#buyModal').modal('hide');
+            }
+        </script>
+    </div>
+</div>
