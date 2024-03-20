@@ -2,6 +2,9 @@ package com.jmel.inv3st0r.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 @Entity
 @Table(name = "transactions")
 public class Transaction {
@@ -10,13 +13,13 @@ public class Transaction {
     private Long id;
 
     @Column(name="account_id", nullable = false)
-    private Long accountID;
+    private Long accountId;
 
     @Column(nullable = false)
-    private boolean owned;
+    private boolean owned = true;
 
     @Column(name="transaction_date", nullable = false, length = 10)
-    private String transactionDate;
+    private String transactionDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
     @Column(nullable = false, length = 10)
     private String symbol;
@@ -41,12 +44,12 @@ public class Transaction {
         this.id = id;
     }
 
-    public Long getAccountID() {
-        return accountID;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setAccountID(Long accountID) {
-        this.accountID = accountID;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
     public boolean isOwned() {

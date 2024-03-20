@@ -11,22 +11,16 @@ public class Account {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userID;
+    private Long userId;
 
     @Column(name = "account_name", nullable = false, length = 100)
     private String accountName;
 
     @Column(name = "cash_balance", nullable = false)
-    private double cashBalance;
+    private double cashBalance = 10000000.00;
 
     @Column(name = "invested_balance")
-    private double investedBalance;
-
-    @Column(name = "stocks_owned")
-    private int stocksOwned;
-
-    @Column(name = "stocks_sold")
-    private int stocksSold;
+    private double investedBalance = 0;
 
     public Long getId() {
         return id;
@@ -36,12 +30,12 @@ public class Account {
         this.id = id;
     }
 
-    public Long getUserID() {
-        return userID;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUserID(Long userID) {
-        this.userID = userID;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getAccountName() {
@@ -65,34 +59,6 @@ public class Account {
     }
 
     public void setInvestedBalance(double investedBalance) {
-        if (investedBalance < 0) {
-            this.investedBalance = 0;
-        } else {
-            this.investedBalance = investedBalance;
-        }
-    }
-
-    public int getStocksOwned() {
-        return stocksOwned;
-    }
-
-    public void setStocksOwned(int stocksOwned) {
-        if (stocksOwned < 0) {
-            this.stocksOwned = 0;
-        } else {
-            this.stocksOwned += stocksOwned;
-        }
-    }
-
-    public int getStocksSold() {
-        return stocksSold;
-    }
-
-    public void setStocksSold(int stocksSold) {
-        if (stocksSold < 0) {
-            this.stocksSold = 0;
-        } else {
-            this.stocksSold -= stocksSold;
-        }
+        this.investedBalance = investedBalance;
     }
 }

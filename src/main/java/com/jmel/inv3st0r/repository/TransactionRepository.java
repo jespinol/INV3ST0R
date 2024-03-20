@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Long> {
     @Query("SELECT t FROM Transaction t WHERE t.account_id = :accountID")
-    Optional<Transaction> findByAccountID(Long accountID);
+    Optional<Transaction> findByAccountId(Long accountId);
 }

@@ -28,8 +28,8 @@ public class AccountController {
     private TransactionRepository transactionRepo;
 
     @GetMapping(value = {"/overview"})
-    public String viewAccountOverview(Model model, @RequestParam("account-id") Long accountID) {
-        Optional<Account> account_opt = accountRepo.findById(accountID);
+    public String viewAccountOverview(Model model, @RequestParam("account-id") Long accountId) {
+        Optional<Account> account_opt = accountRepo.findById(accountId);
         if (account_opt.isEmpty()) {
             return "/home";
         }
@@ -37,7 +37,7 @@ public class AccountController {
         Account account = account_opt.get();
         model.addAttribute("accountInfo", account);
         model.addAttribute("transactions", TransactionController.listAccountTransactions(transactionRepo, account, true));
-        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserID(userRepo)));
+        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserId(userRepo)));
 
         return "/overview";
     }
@@ -45,7 +45,7 @@ public class AccountController {
     @GetMapping(value = {"/new-account"})
     public String addAccount(Model model) {
         model.addAttribute("account", new Account());
-        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserID(userRepo)));
+        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserId(userRepo)));
 
         return "/create-account";
     }
@@ -53,7 +53,7 @@ public class AccountController {
     @PostMapping(value = {"/new-account"})
     public String saveAccount(Account account) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        account.setUserID(userRepo.findByEmail(authentication.getName()).getId());
+        account.setUserId(userRepo.findByEmail(authentication.getName()).getId());
 
         accountRepo.save(account);
 
@@ -63,7 +63,7 @@ public class AccountController {
     public static ArrayList<Account> listAccounts(AccountRepository repo, Long userId) {
         ArrayList<Account> accountList = new ArrayList<>();
         repo.findAll().forEach(account -> {
-            if (account.getUserID().equals(userId)) {
+            if (account.getUserId().equals(userId)) {
                 accountList.add(account);
             }
         });

@@ -42,14 +42,19 @@ public class HomeController {
         return authentication.isAuthenticated();
     }
 
-    public static Long getLoggedUserID(UserRepository repo) {
+    public static Long getLoggedUserId(UserRepository repo) {
         return repo.findByEmail(getAuthentication().getName()).getId();
     }
 
-    @GetMapping(value = {"/", "/home", "/signing", "/login"})
+    @GetMapping(value = {"/login"})
+    public String showLoginForm() {
+        return "/login";
+    }
+
+    @GetMapping(value = {"/", "/home"})
     public String viewStartPage(Model model) {
         if (isAuthenticated()) {
-            ArrayList<Account> accounts = AccountController.listAccounts(accountRepo, getLoggedUserID(userRepo));
+            ArrayList<Account> accounts = AccountController.listAccounts(accountRepo, getLoggedUserId(userRepo));
             model.addAttribute("accounts", accounts);
 
             HashMap<String, ArrayList<Transaction>> accountTransactions= new HashMap<>();
@@ -61,7 +66,7 @@ public class HomeController {
             return "/home";
         }
 
-        return "/signing";
+        return "/login";
     }
 
     @GetMapping("/register")
