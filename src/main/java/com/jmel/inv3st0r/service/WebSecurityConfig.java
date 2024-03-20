@@ -1,10 +1,13 @@
 // The following code is modified from https://www.codejava.net/frameworks/spring-boot/user-registration-and-login-tutorial
 package com.jmel.inv3st0r.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,29 +27,35 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public DaoAuthenticationProvider authenticationProvider(@Autowired PasswordEncoder passwordEncoder,
+            @Autowired UserDetailsService userDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder);
 
         return authProvider;
     }
 
     @Bean
-    SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.authenticationProvider(authenticationProvider());
+    public SecurityFilterChain configure(HttpSecurity http, @Autowired
+    DaoAuthenticationProvider authenticationProvider) throws Exception {
+        http.authenticationProvider(authenticationProvider);
 
-        http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/register", "/").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .formLogin(login ->
-                        login.usernameParameter("email")
-                                .defaultSuccessUrl("/")
-                                .permitAll()
-                )
-                .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
-                ).requestCache(RequestCacheConfigurer::disable);
+        http.authorizeHttpRequests((AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorize) ->
+                authorize
+                .requestMatchers("/register", "/")
+                .permitAll()
+                .anyRequest()
+                .authenticated());
+
+        http.formLogin(form -> form
+                .usernameParameter("email")
+                .loginPage("/login")
+                .permitAll());
+
+        http.requestCache(RequestCacheConfigurer::disable);
+
+        http.rememberMe(Customizer.withDefaults());
 
         return http.build();
     }
