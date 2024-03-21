@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class StockController {
+public class StockMarketController {
 
     @Autowired
     private StockService stockService;
