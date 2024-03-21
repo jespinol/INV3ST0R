@@ -1,0 +1,116 @@
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="fundModalLabel">Fund account ([[${accountInfo.getAccountName()}]])</h5>
+        </div>
+        <div class="modal-body">
+            <form id="accountFundForm" th:action="@{/fund}" method="post" autocomplete="off">
+                <div class="row mb-3">
+                    <div class="col">
+                        Cash available:
+                    </div>
+                    <div class="col">
+                        <input type="text" id="cash-available" class="form-control bg-light border-0 small"
+                               th:value="'$'+${#numbers.formatDecimal(accountInfo.getCashBalance(), 1, 'COMMA', 2, 'POINT')}"
+                               readonly>
+                    </div>
+                </div>
+                <hr>
+                <div class="font-weight-bold">Account info</div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Routing number
+                    </div>
+                    <div class="col">
+                        <input type="text" id="routing-number" name="routing-number" class="form-control">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Account number
+                    </div>
+                    <div class="col">
+                        <input type="text" id="account-number" name="account-number" class="form-control">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Account type
+                    </div>
+                    <div class="col" style="display: flex; align-items: center;">
+                        <input type="radio" id="type-checking" name="account-type" value="checking" style="margin-right: 5px; vertical-align: middle;">
+                        <label for="type-checking" style="margin-right: 15px; vertical-align: middle;">Checking</label>
+                        <input type="radio" id="type-savings" name="account-type" value="savings" style="margin-right: 5px; vertical-align: middle;">
+                        <label for="type-savings" style="vertical-align: middle;">Savings</label>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        Amount
+                    </div>
+                    <div class="col">
+                        <input type="number" id="fund-amount" name="fund-amount" class="form-control" step="0.01"
+                               required>
+                    </div>
+                </div>
+                <input type="hidden" id="account-id" name="account-id">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" type="button" id="cancel-button" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="button" id="fund-button">Fund</button>
+        </div>
+        <script>
+            document.getElementById('accountFundForm').addEventListener('keydown', (event) => preventDefaultEvents(event));
+
+            document.getElementById('cancel-button').addEventListener('click', resetForm);
+
+            document.getElementById('fund-button').addEventListener('click', fundButtonAction);
+
+            function fundButtonAction() {
+                const button = document.getElementById('fund-button');
+                const total = parseFloat(document.getElementById('fund-amount').value);
+
+                if (total > 0) {
+                    if (button.textContent === 'Fund') {
+                        toggleButton(button, true);
+                    } else if (button.textContent === 'Confirm') {
+                        document.getElementById('account-id').value = [[${accountInfo.getId()}]];
+                        document.getElementById('accountFundForm').submit();
+                    }
+                } else {
+                    alert('Please fund your account with $0.01 or more.');
+                }
+            }
+
+            function toggleButton(button, turnOn) {
+                if (turnOn) {
+                    button.textContent = 'Confirm';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-success');
+                } else {
+                    button.textContent = 'Fund';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-primary');
+                }
+            }
+
+            function preventDefaultEvents(event) {
+                if (event.code === 'Enter') {
+                    event.preventDefault();
+                } else if (event.code === 'Escape') {
+                    event.preventDefault();
+                }
+            }
+
+            function resetForm() {
+                console.log("here");
+                document.getElementById('accountFundForm').reset();
+
+                toggleButton(document.getElementById('fund-button'), false);
+
+                $('#fundModal').modal('hide');
+            }
+        </script>
+    </div>
+</div>
