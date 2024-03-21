@@ -1,7 +1,9 @@
 package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
+import com.jmel.inv3st0r.model.Balance;
 import com.jmel.inv3st0r.repository.AccountRepository;
+import com.jmel.inv3st0r.repository.BalanceRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
 import com.jmel.inv3st0r.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +31,9 @@ public class AccountController {
     @Autowired
     private TransactionRepository transactionRepo;
 
-    @GetMapping(value = {"/overview"})
-    public String viewAccountOverview(Model model, @RequestParam("account-id") Long accountId) {
+    @Autowired
+    private BalanceRepository balanceRepo;
+
     @GetMapping(value = {"/view"})
     public String viewAccount(Model model, @RequestParam("account-id") Long accountId) {
         Optional<Account> account_opt = accountRepo.findById(accountId);
@@ -66,7 +69,13 @@ public class AccountController {
 
         accountRepo.save(account);
 
-        return "redirect:/overview?account-id=" + account.getId();
+        Balance balance = new Balance();
+        balance.setUserId(account.getUserId());
+        balance.setAccountId(account.getId());
+        balance.setCashBalance(account.getCashBalance());
+        balance.setInvestedBalance(account.getInvestedBalance());
+        balanceRepo.save(balance);
+
         return "redirect:/account/view?account-id=" + account.getId();
     }
 

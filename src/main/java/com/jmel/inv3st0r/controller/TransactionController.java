@@ -1,9 +1,11 @@
 package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
+import com.jmel.inv3st0r.model.Balance;
 import com.jmel.inv3st0r.model.Stock;
 import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.repository.AccountRepository;
+import com.jmel.inv3st0r.repository.BalanceRepository;
 import com.jmel.inv3st0r.repository.StockRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class TransactionController {
     @Autowired
     private StockRepository stockRepo;
 
+    @Autowired
+    private BalanceRepository balanceRepo;
+
     private Account getAccount(Long accountId) {
         Optional<Account> account_opt = accountRepo.findById(accountId);
         return account_opt.orElse(null);
@@ -45,7 +50,9 @@ public class TransactionController {
     @PostMapping(value = {"/fund"})
     public String fundAccount(@RequestParam("account-id") Long accountId, @RequestParam("fund-amount") double fundAmount) {
         updateAccountFund(accountId, fundAmount);
-        return "redirect:/overview?account-id=" + accountId;
+        Balance balance = balanceRepo.findByAccountId(accountId).orElse(new Balance());
+        balance.setCashBalance(balance.getCashBalance() + fundAmount);
+        balanceRepo.save(balance);
         return "redirect:/account/view?account-id=" + accountId;
     }
 
@@ -64,6 +71,7 @@ public class TransactionController {
         transactionRepo.save(transaction);
         updateAccountTransaction(transaction);
         updateStockRecord(transaction);
+        updateAccountBalance(transaction);
 
         return "redirect:/account/view?account-id=" + transaction.getAccountId();
     }
@@ -90,6 +98,7 @@ public class TransactionController {
         transactionRepo.save(transaction);
         updateAccountTransaction(transaction);
         updateStockRecord(transaction);
+        updateAccountBalance(transaction);
 
         return "redirect:/account/view?account-id=" + transaction.getAccountId();
     }
@@ -124,6 +133,25 @@ public class TransactionController {
         }
 
         accountRepo.save(account);
+    }
+
+    private void updateAccountBalance(Transaction transaction){
+        Optional<Balance> balance_opt = balanceRepo.findByAccountId(transaction.getAccountId());
+        if (balance_opt.isPresent()) {
+            Balance balance = balance_opt.get();
+            double oldCash = balance.getCashBalance();
+            double oldInvested = balance.getInvestedBalance();
+            double transactionAmount = transaction.getTransactionPrice() * transaction.getQuantity();
+            if (transaction.getTransactionType() == Transaction.TransactionType.BUY) {
+                balance.setCashBalance(oldCash - transactionAmount);
+                balance.setInvestedBalance(oldInvested + transactionAmount);
+            } else {
+                balance.setCashBalance(oldCash + transactionAmount);
+                balance.setInvestedBalance(oldInvested - transactionAmount);
+            }
+            balanceRepo.save(balance);
+        }
+
     }
 
     private void updateStockRecord(Transaction transaction) {
