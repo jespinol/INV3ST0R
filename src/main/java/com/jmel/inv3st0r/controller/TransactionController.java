@@ -11,12 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/transaction")
 public class TransactionController {
     @Autowired
     private TransactionRepository transactionRepo;
@@ -44,6 +46,7 @@ public class TransactionController {
     public String fundAccount(@RequestParam("account-id") Long accountId, @RequestParam("fund-amount") double fundAmount) {
         updateAccountFund(accountId, fundAmount);
         return "redirect:/overview?account-id=" + accountId;
+        return "redirect:/account/view?account-id=" + accountId;
     }
 
     @GetMapping(value = {"/purchase"})
@@ -62,7 +65,7 @@ public class TransactionController {
         updateAccountTransaction(transaction);
         updateStockRecord(transaction);
 
-        return "redirect:/overview?account-id=" + transaction.getAccountId();
+        return "redirect:/account/view?account-id=" + transaction.getAccountId();
     }
 
     @GetMapping(value = {"/sell"})
@@ -88,7 +91,7 @@ public class TransactionController {
         updateAccountTransaction(transaction);
         updateStockRecord(transaction);
 
-        return "redirect:/overview?account-id=" + transaction.getAccountId();
+        return "redirect:/account/view?account-id=" + transaction.getAccountId();
     }
 
     private void updateAccountFund(Long accountId, double fundAmount) {

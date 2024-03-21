@@ -1,10 +1,10 @@
-<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document" xmlns="http://www.w3.org/1999/html">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="fundModalLabel">Fund account ([[${accountInfo.getAccountName()}]])</h5>
         </div>
         <div class="modal-body">
-            <form id="accountFundForm" th:action="@{/fund}" method="post" autocomplete="off">
+            <form id="accountFundForm" th:action="@{/transaction/fund}" method="post" autocomplete="off">
                 <div class="row mb-3">
                     <div class="col">
                         Cash available:

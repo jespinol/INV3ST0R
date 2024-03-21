@@ -4,9 +4,8 @@
             <h5 class="modal-title" id="saleModalLabel">Sell ([[${accountInfo.getAccountName()}]])</h5>
         </div>
         <div class="modal-body">
-            <form id="stockSaleForm" th:action="@{/sell}" th:object="${newTransaction}" method="post"
+            <form id="stockSaleForm" th:action="@{/transaction/sell}" th:object="${newTransaction}" method="post"
                   autocomplete="off">
-
                 <div class="row mb-3">
                     <div class="col">
                         Symbol
@@ -21,7 +20,6 @@
 
                     </div>
                 </div>
-
                 <div class="row mb-3">
                     <div class="col">
                         Quantity owned
@@ -30,7 +28,6 @@
                         <input type="text" id="quantity-owned" name="quantity-owned" class="form-control" readonly>
                     </div>
                 </div>
-
                 <div class="row mb-3">
                     <div class="col">
                         Price Per Stock
@@ -39,7 +36,6 @@
                         <input type="text" id="price-per-stock" class="form-control" th:field="${newTransaction.transactionPrice}" readonly>
                     </div>
                 </div>
-
                 <div class="row mb-3">
                     <div class="col">
                         Quantity to sell
@@ -49,7 +45,6 @@
                                oninput="calculateTotal()" th:field="${newTransaction.quantity}">
                     </div>
                 </div>
-
                 <div class="row mb-3">
                     <div class="col">
                         Total sale
@@ -58,20 +53,15 @@
                         <input type="text" id="total-sale" class="form-control" name="total-sale" readonly>
                     </div>
                 </div>
-
                 <input type="hidden" id="stock-symbol" th:field="${newTransaction.symbol}">
                 <input type="hidden" id="stock-company" th:field="${newTransaction.company}">
                 <input type="hidden" id="account-id" th:field="${newTransaction.accountId}">
-
             </form>
-
         </div>
-
         <div class="modal-footer">
             <button class="btn btn-danger" type="button" id="cancel-button">Cancel</button>
             <button type="button" class="btn btn-primary" id="sell-button">Sell</button>
         </div>
-
         <script>
             document.getElementById('stockSaleForm').addEventListener('keydown', (event) => preventDefaultEvents(event));
 

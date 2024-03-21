@@ -11,12 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/account")
 public class AccountController {
     @Autowired
     private AccountRepository accountRepo;
@@ -29,6 +31,8 @@ public class AccountController {
 
     @GetMapping(value = {"/overview"})
     public String viewAccountOverview(Model model, @RequestParam("account-id") Long accountId) {
+    @GetMapping(value = {"/view"})
+    public String viewAccount(Model model, @RequestParam("account-id") Long accountId) {
         Optional<Account> account_opt = accountRepo.findById(accountId);
         if (account_opt.isEmpty()) {
             return "redirect:/home";
@@ -47,7 +51,7 @@ public class AccountController {
         return "/overview";
     }
 
-    @GetMapping(value = {"/new-account"})
+    @GetMapping(value = {"/new"})
     public String addAccount(Model model) {
         model.addAttribute("account", new Account());
         model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserId(userRepo)));
@@ -55,7 +59,7 @@ public class AccountController {
         return "/create-account";
     }
 
-    @PostMapping(value = {"/new-account"})
+    @PostMapping(value = {"/new"})
     public String saveAccount(Account account) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         account.setUserId(userRepo.findByEmail(authentication.getName()).getId());
@@ -63,6 +67,7 @@ public class AccountController {
         accountRepo.save(account);
 
         return "redirect:/overview?account-id=" + account.getId();
+        return "redirect:/account/view?account-id=" + account.getId();
     }
 
     public static ArrayList<Account> listAccounts(AccountRepository repo, Long userId) {
