@@ -155,23 +155,6 @@ public class TransactionController {
             return repo.findAllByAccountId(account.getId());
         }
 
-        return repo.findTop5ByAccountIdOrderByTransactionDateDesc(account.getId());
-        // TODO: truncated list is populated but does not show in /home
-
-//        ArrayList<Transaction> transactionList = new ArrayList<>();
-//
-//        repo.findAll().forEach(transaction -> {
-//            if (transaction.getAccountId().equals(account.getId())) {
-//                transactionList.add(transaction);
-//            }
-//        });
-//
-//        if (!showAll) {
-//            List<Transaction> truncated = transactionList.subList(Math.max(transactionList.size() - 5, 0), transactionList.size());
-//
-//            return new ArrayList<>(truncated);
-//        }
-//
-//        return transactionList;
+        return repo.findTop5ByAccountIdOrderByTransactionDateDesc(accountId);
     }
 }

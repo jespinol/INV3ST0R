@@ -296,7 +296,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="transaction : ${transactions}">
+                <tr th:each="transaction : ${account.value}">
                     <th>[[${transaction.getTransactionDate()}]]</th>
                     <th>[[${transaction.getTransactionType()}]]</th>
                     <td>[[${transaction.getSymbol()}]]</td>
