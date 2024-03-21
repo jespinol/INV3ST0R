@@ -150,9 +150,9 @@ public class TransactionController {
         return stock;
     }
 
-    public static ArrayList<Transaction> listAccountTransactions(TransactionRepository repo, Account account, boolean showAll) {
+    public static ArrayList<Transaction> listAccountTransactions(TransactionRepository repo, Long accountId, boolean showAll) {
         if (showAll) {
-            return repo.findAllByAccountId(account.getId());
+            return repo.findAllByAccountId(accountId);
         }
 
         return repo.findTop5ByAccountIdOrderByTransactionDateDesc(accountId);

@@ -36,8 +36,8 @@ public class AccountController {
 
         Account account = account_opt.get();
         model.addAttribute("accountInfo", account);
-        model.addAttribute("transactions", TransactionController.listAccountTransactions(transactionRepo, account, true));
-        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserId(userRepo)));
+        model.addAttribute("transactions", TransactionController.listAccountTransactions(transactionRepo, account.getId(), true));
+        model.addAttribute("accounts", listAccounts(accountRepo, userId));
 
         return "/overview";
     }
@@ -61,13 +61,6 @@ public class AccountController {
     }
 
     public static ArrayList<Account> listAccounts(AccountRepository repo, Long userId) {
-        ArrayList<Account> accountList = new ArrayList<>();
-        repo.findAll().forEach(account -> {
-            if (account.getUserId().equals(userId)) {
-                accountList.add(account);
-            }
-        });
-
-        return accountList;
+        return repo.findAllByUserId(userId);
     }
 }

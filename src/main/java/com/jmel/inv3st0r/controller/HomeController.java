@@ -59,7 +59,9 @@ public class HomeController {
 
             HashMap<String, ArrayList<Transaction>> accountTransactions= new HashMap<>();
             for (Account account : accounts) {
-                accountTransactions.put(account.getAccountName(), TransactionController.listAccountTransactions(transactionRepo, account, false));
+                String accountName = account.getAccountName();
+                ArrayList<Transaction> transactions = TransactionController.listAccountTransactions(transactionRepo, account.getId(), false);
+                accountTransactions.put(accountName, transactions);
             }
             model.addAttribute("accountTransactions", accountTransactions);
 
