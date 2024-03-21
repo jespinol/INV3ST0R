@@ -31,10 +31,15 @@ public class AccountController {
     public String viewAccountOverview(Model model, @RequestParam("account-id") Long accountId) {
         Optional<Account> account_opt = accountRepo.findById(accountId);
         if (account_opt.isEmpty()) {
-            return "/home";
+            return "redirect:/home";
         }
 
         Account account = account_opt.get();
+        Long userId = HomeController.getLoggedUserId(userRepo);
+        if (!account.getUserId().equals(userId)) {
+            System.out.printf("User %d tried to access account %d without permission.\n", userId, accountId);
+            return "redirect:/home";
+        }
         model.addAttribute("accountInfo", account);
         model.addAttribute("transactions", TransactionController.listAccountTransactions(transactionRepo, account.getId(), true));
         model.addAttribute("accounts", listAccounts(accountRepo, userId));
