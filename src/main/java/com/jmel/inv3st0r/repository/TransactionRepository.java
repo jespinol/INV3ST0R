@@ -2,13 +2,12 @@ package com.jmel.inv3st0r.repository;
 
 import com.jmel.inv3st0r.model.Transaction;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 
-
-import java.util.Optional;
+import java.util.ArrayList;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Long> {
-    @Query("SELECT t FROM Transaction t WHERE t.account_id = :accountID")
-    Optional<Transaction> findByAccountId(Long accountId);
+    ArrayList<Transaction> findAllByAccountId(@Param("accountId") Long accountId);
+
+    ArrayList<Transaction> findTop5ByAccountIdOrderByTransactionDateDesc(@Param("accountId") Long accountId);
 }

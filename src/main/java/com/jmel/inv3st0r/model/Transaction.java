@@ -8,6 +8,9 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Table(name = "transactions")
 public class Transaction {
+    public static enum TransactionType {
+        BUY, SELL
+    }
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,15 +19,15 @@ public class Transaction {
     private Long accountId;
 
     @Column(nullable = false)
-    private boolean owned = true;
+    private TransactionType transactionType = TransactionType.BUY;
 
-    @Column(name="transaction_date", nullable = false, length = 10)
+    @Column(name="transaction_date", nullable = false)
     private String transactionDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false)
     private String symbol;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false)
     private String company;
 
     @Column(nullable = false)
@@ -52,12 +55,12 @@ public class Transaction {
         this.accountId = accountId;
     }
 
-    public boolean isOwned() {
-        return owned;
+    public TransactionType getTransactionType() {
+        return transactionType;
     }
 
-    public void setOwned(boolean owned) {
-        this.owned = owned;
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 
     public String getTransactionDate() {

@@ -298,7 +298,7 @@
                 <tbody>
                 <tr th:each="transaction : ${transactions}">
                     <th>[[${transaction.getTransactionDate()}]]</th>
-                    <th>[[${transaction.isOwned()}]]</th>
+                    <th>[[${transaction.getTransactionType()}]]</th>
                     <td>[[${transaction.getSymbol()}]]</td>
                     <td>[[${transaction.getCompany()}]]</td>
                     <td>[[${transaction.getQuantity()}]]</td>
@@ -347,7 +347,7 @@
                     <tbody>
                     <tr th:each="transaction : ${transactions}">
                         <th>[[${transaction.getTransactionDate()}]]</th>
-                        <th>[[${transaction.isOwned()}]]</th>
+                        <th>[[${transaction.getTransactionType()}]]</th>
                         <td>[[${transaction.getSymbol()}]]</td>
                         <td>[[${transaction.getCompany()}]]</td>
                         <td>[[${transaction.getQuantity()}]]</td>
