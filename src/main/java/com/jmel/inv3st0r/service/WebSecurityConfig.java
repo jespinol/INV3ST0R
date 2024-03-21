@@ -43,7 +43,7 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorize) ->
                 authorize
-                .requestMatchers("/register", "/")
+                .requestMatchers("/register", "/login")
                 .permitAll()
                 .anyRequest()
                 .authenticated());
