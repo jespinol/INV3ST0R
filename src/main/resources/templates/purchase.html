@@ -37,7 +37,7 @@
                     </div>
                     <div class="col">
                         <input type="text" id="price-per-stock" class="form-control"
-                               th:field="${newTransaction.purchasePrice}" readonly>
+                               th:field="${newTransaction.transactionPrice}" readonly>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -60,7 +60,6 @@
                 <input type="hidden" id="stock-symbol" th:field="${newTransaction.symbol}">
                 <input type="hidden" id="stock-company" th:field="${newTransaction.company}">
                 <input type="hidden" id="account-id" th:field="${newTransaction.accountId}">
-                <input type="hidden" id="last-price" th:field="${newTransaction.lastCurrentPrice}">
             </form>
         </div>
         <div class="modal-footer">
@@ -123,7 +122,6 @@
                 document.getElementById('stock-symbol').value = symbol;
                 document.getElementById('stock-company').value = name;
                 document.getElementById('account-id').value = [[${accountInfo.getId()}]];
-                document.getElementById('last-price').value = currentPrice.toFixed(2);
 
                 fetch(`/api/stock-price?symbol=${encodeURIComponent(symbol)}`)
                     .then(response => response.json())

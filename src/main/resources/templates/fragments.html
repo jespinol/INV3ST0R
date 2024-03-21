@@ -41,11 +41,6 @@
             <span>Profile</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-cogs"></i>
-            <span>Settings</span></a>
-    </li>
-    <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
             <i class="fas fa-fw fa-sign-out-alt"></i>
             Logout
@@ -164,10 +159,6 @@
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
-                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -234,21 +225,16 @@
                     <th>Name</th>
                     <th>Quantity</th>
                     <th>Cost basis</th>
-                    <th>Last price</th>
-                    <th>Total gain/loss</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="transaction : ${account.value}">
-                    <th>[[${transaction.getTransactionDate()}]]</th>
-                    <th>[[${transaction.getTransactionType()}]]</th>
+                    <td>[[${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}]]</td>
+                    <td>[[${transaction.getTransactionType()}]]</td>
                     <td>[[${transaction.getSymbol()}]]</td>
                     <td>[[${transaction.getCompany()}]]</td>
                     <td>[[${transaction.getQuantity()}]]</td>
-                    <td>[[${transaction.getPurchasePrice() * transaction.getQuantity()}]]</td>
-                    <td>[[${transaction.getLastCurrentPrice()}]]</td>
-                    <td>[[${(transaction.getLastCurrentPrice() - transaction.getPurchasePrice()) *
-                        transaction.getQuantity()}]]
+                    <td>[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice(), 1, 'COMMA', 2, 'POINT')}]]</td>
                     </td>
                 </tr>
                 </tbody>
@@ -273,8 +259,6 @@
                         <th>Name</th>
                         <th>Quantity</th>
                         <th>Cost basis</th>
-                        <th>Last price</th>
-                        <th>Total gain/loss</th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -285,22 +269,16 @@
                         <th>Name</th>
                         <th>Quantity</th>
                         <th>Cost basis</th>
-                        <th>Last price</th>
-                        <th>Total gain/loss</th>
                     </tr>
                     </tfoot>
                     <tbody>
                     <tr th:each="transaction : ${transactions}">
-                        <th>[[${transaction.getTransactionDate()}]]</th>
-                        <th>[[${transaction.getTransactionType()}]]</th>
+                        <td>[[${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}]]</td>
+                        <td>[[${transaction.getTransactionType()}]]</td>
                         <td>[[${transaction.getSymbol()}]]</td>
                         <td>[[${transaction.getCompany()}]]</td>
                         <td>[[${transaction.getQuantity()}]]</td>
-                        <td>[[${transaction.getPurchasePrice() * transaction.getQuantity()}]]</td>
-                        <td>[[${transaction.getLastCurrentPrice()}]]</td>
-                        <td>[[${(transaction.getLastCurrentPrice() - transaction.getPurchasePrice()) *
-                            transaction.getQuantity()}]]
-                        </td>
+                        <td>[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice(), 1, 'COMMA', 2, 'POINT')}]]</td>
                     </tr>
                     </tbody>
                 </table>

@@ -111,7 +111,7 @@ public class TransactionController {
 
         double oldCash = account.getCashBalance();
         double oldInvested = account.getInvestedBalance();
-        double transactionCost = transaction.getPurchasePrice() * transaction.getQuantity();
+        double transactionCost = transaction.getTransactionPrice() * transaction.getQuantity();
         if (transaction.getTransactionType() == Transaction.TransactionType.BUY) {
             account.setCashBalance(oldCash - transactionCost);
             account.setInvestedBalance(oldInvested + transactionCost);
@@ -145,7 +145,7 @@ public class TransactionController {
         stock.setSymbol(transaction.getSymbol());
         stock.setCompany(transaction.getCompany());
         stock.setQuantity(transaction.getQuantity());
-        stock.setLastPrice(transaction.getPurchasePrice());
+        stock.setLastPrice(transaction.getTransactionPrice());
 
         return stock;
     }
