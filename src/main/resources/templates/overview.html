@@ -1,56 +1,65 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-
 <head th:replace="~{fragments :: head}"></head>
-
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:replace="~{fragments :: sidebar}"></div>
-
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
             <div th:replace="~{fragments :: topbar}"></div>
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <h1 class="h1 mb-4 text-gray-800">[[${accountInfo.getAccountName()}]]</h1>
-
                 <!-- Account summary -->
                 <div>
                     <h4>Summary</h4>
                 </div>
-                <!-- Investment progress bar -->
+                <!-- Investment progress -->
                 <div class="card shadow mb-4"
                      th:with="invested=${accountInfo.getInvestedBalance()}, cash=${accountInfo.getCashBalance()}">
                     <div class="card-body">
-                        <h4 class="font-weight-bold">Total Balance:
-                            $[[${#numbers.formatDecimal(invested + cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
-                        <h4>Invested Balance: $[[${#numbers.formatDecimal(invested, 1, 'COMMA', 2, 'POINT')}]]</h4>
-                        <h4>Cash Balance: $[[${#numbers.formatDecimal(cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
-
+                        <div class="row">
+                            <div class="col-3">
+                                <h4 class="font-weight-bold">Total Balance:</h4>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="font-weight-bold float-right">$[[${#numbers.formatDecimal(invested + cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <h4>Invested Balance:</h4>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="float-right">$[[${#numbers.formatDecimal(invested, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <h4>Cash Balance:</h4>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="float-right"> $[[${#numbers.formatDecimal(cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                            </div>
+                        </div>
                     </div>
+                    <!-- Investment progress bar -->
                     <div class="card-body">
-                        <h4 class="small font-weight-bold text-info">Invested <span
-                                class="float-right text-gray-800">Cash</span></h4>
                         <div class="progress mb-4" th:with="percentage=${(invested / (invested + cash)) * 100}">
                             <div class="progress-bar bg-info" role="progressbar"
                                  th:attr="style='width:'+${percentage}+'%', aria-valuenow=${percentage}"
                                  aria-valuemin="0"
                                  aria-valuemax="100"></div>
                         </div>
+                        <h4 class="small font-weight-bold text-info">Invested <span
+                                class="float-right text-gray-800">Cash</span></h4>
                     </div>
                 </div>
-
                 <!-- Operations -->
                 <div>
                     <h4>Operations</h4>
@@ -75,7 +84,6 @@
                     </div>
                     <div class="modal fade" id="purchaseModal" tabindex="-1" role="dialog"
                          aria-labelledby="purchaseModalLabel" aria-hidden="true" data-backdrop="static"></div>
-
                     <!-- Sell Card -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-bottom-danger shadow h-100 py-2">
@@ -95,7 +103,6 @@
                     </div>
                     <div class="modal fade" id="sellModal" tabindex="-1" role="dialog"
                          aria-labelledby="sellModalLabel" aria-hidden="true" data-backdrop="static"></div>
-
                     <!-- Fund Card -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-bottom-primary shadow h-100 py-2">
@@ -115,31 +122,21 @@
                     </div>
                     <div class="modal fade" id="fundModal" tabindex="-1" role="dialog"
                          aria-labelledby="fundModalLabel" aria-hidden="true" data-backdrop="static"></div>
-
                 </div>
-
-                <!-- Transactions -->
+                <!-- Transaction table -->
                 <div>
                     <h4>Transactions</h4>
                 </div>
-
                 <div th:replace="~{fragments :: txns-table-full}"></div>
-
-
             </div>
-            <!-- /.container-fluid -->
-
         </div>
         <!-- End of Main Content -->
-
         <div th:replace="~{fragments :: footer}"></div>
-
     </div>
-
     <script>
         function getModalContent(action) {
             let modal = `#${action}Modal`;
-            let path = `/${action}?account-id=[[${accountInfo.getId()}]]`;
+            let path = `/transaction/${action}?account-id=[[${accountInfo.getId()}]]`;
             fetch(path)
                 .then(response => response.text())
                 .then(data => {
@@ -148,17 +145,11 @@
         }
     </script>
     <!-- End of Content Wrapper -->
-
 </div>
 <!-- End of Page Wrapper -->
-
 <div th:replace="~{fragments :: scroll-to-top}"></div>
-
 <div th:replace="~{fragments :: logout-modal}"></div>
-
 <div th:replace="~{fragments :: js-core}"></div>
 <div th:replace="~{fragments :: js-table}"></div>
-
 </body>
-
 </html>

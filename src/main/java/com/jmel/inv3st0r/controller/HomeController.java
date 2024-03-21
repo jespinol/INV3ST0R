@@ -61,7 +61,9 @@ public class HomeController {
             for (Account account : accounts) {
                 String accountName = account.getAccountName();
                 ArrayList<Transaction> transactions = TransactionController.listAccountTransactions(transactionRepo, account.getId(), false);
-                accountTransactions.put(accountName, transactions);
+                if (transactions.size() > 0) {
+                    accountTransactions.put(accountName, transactions);
+                }
             }
             model.addAttribute("accountTransactions", accountTransactions);
 
@@ -86,6 +88,6 @@ public class HomeController {
 
         userRepo.save(user);
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 }
