@@ -80,7 +80,8 @@
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-bottom-danger shadow h-100 py-2">
                             <div class="card-body">
-                                <a href="#" class="stretched-link"></a>
+                                <a class="stretched-link" href="#" data-toggle="modal" data-target="#sellModal"
+                                   onclick="getModalContent('sell')"></a>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="h3 mb-0 font-weight-bold text-gray-800">Sell</div>
@@ -92,12 +93,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal fade" id="sellModal" tabindex="-1" role="dialog"
+                         aria-labelledby="sellModalLabel" aria-hidden="true" data-backdrop="static"></div>
 
                     <!-- Fund Card -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-bottom-primary shadow h-100 py-2">
                             <div class="card-body">
-                                <a href="#" class="stretched-link"></a>
+                                <a class="stretched-link" href="#" data-toggle="modal" data-target="#fundModal"
+                                   onclick="getModalContent('fund')"></a>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="h3 mb-0 font-weight-bold text-gray-800">Fund account</div>
@@ -109,6 +113,8 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal fade" id="fundModal" tabindex="-1" role="dialog"
+                         aria-labelledby="fundModalLabel" aria-hidden="true" data-backdrop="static"></div>
 
                 </div>
 
@@ -132,8 +138,8 @@
 
     <script>
         function getModalContent(action) {
-            let modal = '#' + action + 'Modal';
-            let path = '/' + action + '-stock?account-id=[[${accountInfo.getId()}]]'
+            let modal = `#${action}Modal`;
+            let path = `/${action}?account-id=[[${accountInfo.getId()}]]`;
             fetch(path)
                 .then(response => response.text())
                 .then(data => {
