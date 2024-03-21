@@ -4,7 +4,7 @@
             <h5 class="modal-title" id="purchaseModalLabel">Buy ([[${accountInfo.getAccountName()}]])</h5>
         </div>
         <div class="modal-body">
-            <form id="stockPurchaseForm" th:action="@{/purchase-stock}" th:object="${newTransaction}" method="post"
+            <form id="stockPurchaseForm" th:action="@{/purchase}" th:object="${newTransaction}" method="post"
                   autocomplete="off">
                 <div class="row mb-3">
                     <div class="col">
@@ -60,6 +60,7 @@
                 <input type="hidden" id="stock-symbol" th:field="${newTransaction.symbol}">
                 <input type="hidden" id="stock-company" th:field="${newTransaction.company}">
                 <input type="hidden" id="account-id" th:field="${newTransaction.accountId}">
+                <input type="hidden" id="last-price" th:field="${newTransaction.lastCurrentPrice}">
             </form>
         </div>
         <div class="modal-footer">
@@ -67,18 +68,19 @@
             <button type="button" class="btn btn-primary" id="buy-button">Buy</button>
         </div>
         <script>
-            let currentPrice = 0;
+            document.getElementById('stockPurchaseForm').addEventListener('keydown', (event) => preventDefaultEvents(event));
 
-            document.getElementById('stockPurchaseForm').addEventListener('keydown', function (event) {
-                if (event.code === 'Enter') {
-                    event.preventDefault();
-                } else if (event.code === 'Escape') {
-                    resetForm();
-                }
-            });
             document.getElementById('cancel-button').addEventListener('click', resetForm);
 
-            document.getElementById('search-button').addEventListener('click', function () {
+            document.getElementById('search-button').addEventListener('click', searchStock);
+
+            document.getElementById('buy-button').addEventListener('click', buyButtonAction);
+
+            document.getElementById('stockPurchaseForm').addEventListener('click', closeDropdown);
+
+            let currentPrice = 0;
+
+            function searchStock() {
                 const input = document.getElementById('stock-selector').value;
 
                 if (input.length >= 1) {
@@ -88,17 +90,24 @@
                             const dropdown = document.getElementById('stock-dropdown');
                             dropdown.innerHTML = '';
                             if (data && data.results) {
-                                data.results.forEach(stock => {
+                                if (data.results.length === 0) {
                                     const option = document.createElement('a');
-                                    option.href = "#";
                                     option.classList.add('dropdown-item');
-                                    option.textContent = `${stock.ticker} (${stock.name})`;
-                                    option.onclick = (e) => {
-                                        e.preventDefault();
-                                        selectStock(stock.ticker, stock.name);
-                                    };
+                                    option.textContent = 'No results found';
                                     dropdown.appendChild(option);
-                                });
+                                } else {
+                                    data.results.forEach(stock => {
+                                        const option = document.createElement('a');
+                                        option.href = "#";
+                                        option.classList.add('dropdown-item');
+                                        option.textContent = `${stock.ticker} (${stock.name})`;
+                                        option.onclick = (e) => {
+                                            e.preventDefault();
+                                            selectStock(stock.ticker, stock.name);
+                                        };
+                                        dropdown.appendChild(option);
+                                    });
+                                }
 
                                 dropdown.classList.add('show');
                             } else {
@@ -107,13 +116,14 @@
                         })
                         .catch(error => console.error('Error fetching stock data:', error));
                 }
-            });
+            }
 
             function selectStock(symbol, name) {
                 document.getElementById('stock-selector').value = `${symbol} (${name})`;
                 document.getElementById('stock-symbol').value = symbol;
                 document.getElementById('stock-company').value = name;
                 document.getElementById('account-id').value = [[${accountInfo.getId()}]];
+                document.getElementById('last-price').value = currentPrice.toFixed(2);
 
                 fetch(`/api/stock-price?symbol=${encodeURIComponent(symbol)}`)
                     .then(response => response.json())
@@ -135,30 +145,54 @@
                 document.getElementById('total-cost').value = isNaN(totalCost) ? '' : totalCost.toFixed(2);
             }
 
-            document.getElementById('buy-button').addEventListener('click', function () {
-                const buyButton = document.getElementById('buy-button');
-                const totalCost = parseFloat(document.getElementById('total-cost').value);
+            function buyButtonAction() {
+                const button = document.getElementById('buy-button');
+                const total = parseFloat(document.getElementById('total-cost').value);
 
-                if (totalCost > 0) {
-                    if (buyButton.textContent === 'Buy') {
-                        buyButton.textContent = 'Confirm';
-                        buyButton.classList.remove('btn-primary');
-                        buyButton.classList.add('btn-success');
-                    } else if (buyButton.textContent === 'Confirm') {
+                if (total > 0) {
+                    if (button.textContent === 'Buy') {
+                        toggleButton(button, true);
+                    } else if (button.textContent === 'Confirm') {
                         document.getElementById('stockPurchaseForm').submit();
                     }
                 } else {
                     alert('Please select a valid stock and quantity before buying.');
                 }
-            });
+            }
+
+            function toggleButton(button, turnOn) {
+                if (turnOn) {
+                    button.textContent = 'Confirm';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-success');
+                } else {
+                    button.textContent = 'Buy';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-primary');
+                }
+            }
+
+            function closeDropdown() {
+                document.getElementById('stock-dropdown').classList.remove('show');
+            }
+
+            function preventDefaultEvents(event) {
+                if (event.code === 'Enter') {
+                    event.preventDefault();
+                    searchStock();
+                } else if (event.code === 'Escape') {
+                    closeDropdown();
+                }
+            }
 
             function resetForm() {
-                console.log("here");
                 document.getElementById('stockPurchaseForm').reset();
+
+                toggleButton(document.getElementById('buy-button'), false);
+
                 currentPrice = 0;
-                document.getElementById('total-cost').value = '';
-                document.getElementById('price-per-stock').value = '';
-                $('#buyModal').modal('hide');
+
+                $('#purchaseModal').modal('hide');
             }
         </script>
     </div>
