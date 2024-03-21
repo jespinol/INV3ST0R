@@ -1,0 +1,157 @@
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="saleModalLabel">Sell ([[${accountInfo.getAccountName()}]])</h5>
+        </div>
+        <div class="modal-body">
+            <form id="stockSaleForm" th:action="@{/sell}" th:object="${newTransaction}" method="post"
+                  autocomplete="off">
+
+                <div class="row mb-3">
+                    <div class="col">
+                        Symbol
+                    </div>
+                    <div class="col">
+                        <div class="input-group">
+                            <select class="form-control" id="stock-selector">
+                                <option value="0"></option>
+                                <option th:each="stock : ${ownedStocks}" th:with="s=${stock.getSymbol()}, c=${stock.getCompany()}, q=${stock.getQuantity()}" th:value="${s} " th:text="${s} + ' (' + ${c} + ')'" th:attr="data-owned=${q}, data-symbol=${s}, data-company=${c}"></option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        Quantity owned
+                    </div>
+                    <div class="col">
+                        <input type="text" id="quantity-owned" name="quantity-owned" class="form-control" readonly>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        Price Per Stock
+                    </div>
+                    <div class="col">
+                        <input type="text" id="price-per-stock" class="form-control" th:field="${newTransaction.purchasePrice}" readonly>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        Quantity to sell
+                    </div>
+                    <div class="col">
+                        <input type="text" id="quantity" name="quantity" class="form-control" min="1"
+                               oninput="calculateTotal()" th:field="${newTransaction.quantity}">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        Total sale
+                    </div>
+                    <div class="col">
+                        <input type="text" id="total-sale" class="form-control" name="total-sale" readonly>
+                    </div>
+                </div>
+
+                <input type="hidden" id="stock-symbol" th:field="${newTransaction.symbol}">
+                <input type="hidden" id="stock-company" th:field="${newTransaction.company}">
+                <input type="hidden" id="account-id" th:field="${newTransaction.accountId}">
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-danger" type="button" id="cancel-button">Cancel</button>
+            <button type="button" class="btn btn-primary" id="sell-button">Sell</button>
+        </div>
+
+        <script>
+            document.getElementById('stockSaleForm').addEventListener('keydown', (event) => preventDefaultEvents(event));
+
+            document.getElementById('stock-selector').addEventListener('change', selectStock);
+
+            document.getElementById('cancel-button').addEventListener('click', resetForm);
+
+            document.getElementById('sell-button').addEventListener('click', sellButtonAction);
+
+            let currentPrice = 0;
+
+            function selectStock() {
+                const selector = $('#stock-selector');
+                $('#quantity-owned').val(selector.find(':selected').attr('data-owned'));
+                const symbol = selector.find(':selected').attr('data-symbol');
+
+                fetch(`/api/stock-price?symbol=${encodeURIComponent(symbol)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.results && data.results.length > 0) {
+                            currentPrice = data.results[0].c;
+                            document.getElementById('price-per-stock').value = currentPrice.toFixed(2);
+                            document.getElementById('stock-symbol').value = symbol;
+                            document.getElementById('stock-company').value = $('#stock-selector').find(':selected').attr('data-company');
+                            document.getElementById('account-id').value = [[${accountInfo.getId()}]];
+                        }
+                    })
+                    .catch(error => console.error('Error fetching stock data:', error));
+            }
+
+            function calculateTotal() {
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const totalCost = quantity * currentPrice;
+                document.getElementById('total-sale').value = isNaN(totalCost) ? '' : totalCost.toFixed(2);
+            }
+
+            function sellButtonAction() {
+                const button = document.getElementById('sell-button');
+                const total = parseFloat(document.getElementById('total-sale').value);
+
+                if (total > 0) {
+                    if (button.textContent === 'Sell') {
+                        toggleButton(button, true);
+                    } else if (button.textContent === 'Confirm') {
+                        document.getElementById('stockSaleForm').submit();
+                    }
+                } else {
+                    alert('Please select a valid stock and quantity before buying.');
+                }
+            }
+
+            function toggleButton(button, turnOn) {
+                if (turnOn) {
+                    button.textContent = 'Confirm';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-success');
+                } else {
+                    button.textContent = 'Sell';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-primary');
+                }
+            }
+
+            function preventDefaultEvents(event) {
+                if (event.code === 'Enter') {
+                    event.preventDefault();
+                } else if (event.code === 'Escape') {
+                    event.preventDefault();
+                }
+            }
+
+            function resetForm() {
+                document.getElementById('stockSaleForm').reset();
+
+                toggleButton(document.getElementById('sell-button'), false);
+
+                currentPrice = 0;
+
+                $('#sellModal').modal('hide');
+            }
+        </script>
+    </div>
+</div>
