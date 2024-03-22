@@ -2,7 +2,6 @@ package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
 import com.jmel.inv3st0r.model.Balance;
-import com.jmel.inv3st0r.model.Stock;
 import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.BalanceRepository;
@@ -16,8 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.Optional;
+
+import static com.jmel.inv3st0r.service.AccountService.getOwnedStocks;
+import static com.jmel.inv3st0r.service.AccountService.updateAccount;
+import static com.jmel.inv3st0r.service.BalanceService.updateBalance;
+import static com.jmel.inv3st0r.service.StockService.updateStockRecord;
 
 @Controller
 @RequestMapping("/transaction")
@@ -49,10 +52,15 @@ public class TransactionController {
 
     @PostMapping(value = {"/fund"})
     public String fundAccount(@RequestParam("account-id") Long accountId, @RequestParam("fund-amount") double fundAmount) {
-        updateAccountFund(accountId, fundAmount);
+        Account account = getAccount(accountId);
+        account.setCashBalance(account.getCashBalance() + fundAmount);
+        accountRepo.save(account);
+
+
         Balance balance = balanceRepo.findByAccountId(accountId).orElse(new Balance());
         balance.setCashBalance(balance.getCashBalance() + fundAmount);
         balanceRepo.save(balance);
+
         return "redirect:/account/view?account-id=" + accountId;
     }
 
@@ -69,9 +77,9 @@ public class TransactionController {
     @PostMapping(value = {"/purchase"})
     public String buyStock(Transaction transaction) {
         transactionRepo.save(transaction);
-        updateAccountTransaction(transaction);
-        updateStockRecord(transaction);
-        updateAccountBalance(transaction);
+        updateAccount(transaction, accountRepo);
+        updateStockRecord(transaction, stockRepo);
+        updateBalance(transaction, balanceRepo);
 
         return "redirect:/account/view?account-id=" + transaction.getAccountId();
     }
@@ -83,109 +91,19 @@ public class TransactionController {
 
         model.addAttribute("newTransaction", new Transaction());
 
-        model.addAttribute("ownedStocks", getOwnedStocks(accountId));
+        model.addAttribute("ownedStocks", getOwnedStocks(accountId, stockRepo));
 
         return "/sell";
-    }
-
-    private ArrayList<Stock> getOwnedStocks(Long accountId) {
-        return stockRepo.findAllByAccountId(accountId);
     }
 
     @PostMapping(value = {"/sell"})
     public String sellStock(Transaction transaction) {
         transaction.setTransactionType(Transaction.TransactionType.SELL);
         transactionRepo.save(transaction);
-        updateAccountTransaction(transaction);
-        updateStockRecord(transaction);
-        updateAccountBalance(transaction);
+        updateAccount(transaction, accountRepo);
+        updateStockRecord(transaction, stockRepo);
+        updateBalance(transaction, balanceRepo);
 
         return "redirect:/account/view?account-id=" + transaction.getAccountId();
-    }
-
-    private void updateAccountFund(Long accountId, double fundAmount) {
-        Account account = getAccount(accountId);
-        if (account == null) {
-            System.out.println("updateAccountFund: Account not found");
-            return;
-        }
-
-        account.setCashBalance(account.getCashBalance() + fundAmount);
-        accountRepo.save(account);
-    }
-
-    private void updateAccountTransaction(Transaction transaction) {
-        Account account = getAccount(transaction.getAccountId());
-        if (account == null) {
-            System.out.println("updateAccountTransaction: Account not found");
-            return;
-        }
-
-        double oldCash = account.getCashBalance();
-        double oldInvested = account.getInvestedBalance();
-        double transactionCost = transaction.getTransactionPrice() * transaction.getQuantity();
-        if (transaction.getTransactionType() == Transaction.TransactionType.BUY) {
-            account.setCashBalance(oldCash - transactionCost);
-            account.setInvestedBalance(oldInvested + transactionCost);
-        } else {
-            account.setCashBalance(oldCash + transactionCost);
-            account.setInvestedBalance(oldInvested - transactionCost);
-        }
-
-        accountRepo.save(account);
-    }
-
-    private void updateAccountBalance(Transaction transaction){
-        Optional<Balance> balance_opt = balanceRepo.findByAccountId(transaction.getAccountId());
-        if (balance_opt.isPresent()) {
-            Balance balance = balance_opt.get();
-            double oldCash = balance.getCashBalance();
-            double oldInvested = balance.getInvestedBalance();
-            double transactionAmount = transaction.getTransactionPrice() * transaction.getQuantity();
-            if (transaction.getTransactionType() == Transaction.TransactionType.BUY) {
-                balance.setCashBalance(oldCash - transactionAmount);
-                balance.setInvestedBalance(oldInvested + transactionAmount);
-            } else {
-                balance.setCashBalance(oldCash + transactionAmount);
-                balance.setInvestedBalance(oldInvested - transactionAmount);
-            }
-            balanceRepo.save(balance);
-        }
-
-    }
-
-    private void updateStockRecord(Transaction transaction) {
-        Optional<Stock> stock_opt = stockRepo.findBySymbolAndAccountId(transaction.getSymbol(), transaction.getAccountId());
-        if (stock_opt.isPresent()) {
-            Stock stock = stock_opt.get();
-            if (transaction.getTransactionType() == Transaction.TransactionType.BUY) {
-                stock.setQuantity(stock.getQuantity() + transaction.getQuantity());
-            } else {
-                stock.setQuantity(stock.getQuantity() - transaction.getQuantity());
-            }
-            stockRepo.save(stock);
-            return;
-        }
-
-        stockRepo.save(createNewStockRecord(transaction));
-    }
-
-    private Stock createNewStockRecord(Transaction transaction) {
-        Stock stock = new Stock();
-        stock.setAccountId(transaction.getAccountId());
-        stock.setSymbol(transaction.getSymbol());
-        stock.setCompany(transaction.getCompany());
-        stock.setQuantity(transaction.getQuantity());
-        stock.setLastPrice(transaction.getTransactionPrice());
-
-        return stock;
-    }
-
-    public static ArrayList<Transaction> listAccountTransactions(TransactionRepository repo, Long accountId, boolean showAll) {
-        if (showAll) {
-            return repo.findAllByAccountId(accountId);
-        }
-
-        return repo.findTop5ByAccountIdOrderByTransactionDateDesc(accountId);
     }
 }

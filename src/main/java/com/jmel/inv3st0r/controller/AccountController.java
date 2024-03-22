@@ -1,14 +1,11 @@
 package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
-import com.jmel.inv3st0r.model.Balance;
 import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.BalanceRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
 import com.jmel.inv3st0r.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import static com.jmel.inv3st0r.service.AccountService.getAccount;
+import static com.jmel.inv3st0r.service.AccountService.listAccounts;
+import static com.jmel.inv3st0r.service.BalanceService.newAccountBalance;
+import static com.jmel.inv3st0r.service.TransactionService.listTransactions;
+import static com.jmel.inv3st0r.service.UIDService.loggedUID;
 
 @Controller
 @RequestMapping("/account")
@@ -36,19 +36,18 @@ public class AccountController {
 
     @GetMapping(value = {"/view"})
     public String viewAccount(Model model, @RequestParam("account-id") Long accountId) {
-        Optional<Account> account_opt = accountRepo.findById(accountId);
-        if (account_opt.isEmpty()) {
+        Account account = getAccount(accountRepo, accountId);
+        if (account == null) {
             return "redirect:/home";
         }
 
-        Account account = account_opt.get();
-        Long userId = HomeController.getLoggedUserId(userRepo);
+        Long userId = loggedUID(userRepo);
         if (!account.getUserId().equals(userId)) {
             System.out.printf("User %d tried to access account %d without permission.\n", userId, accountId);
             return "redirect:/home";
         }
         model.addAttribute("accountInfo", account);
-        model.addAttribute("transactions", TransactionController.listAccountTransactions(transactionRepo, account.getId(), true));
+        model.addAttribute("transactions", listTransactions(transactionRepo, account.getId(), true));
         model.addAttribute("accounts", listAccounts(accountRepo, userId));
 
         return "/overview";
@@ -57,29 +56,19 @@ public class AccountController {
     @GetMapping(value = {"/new"})
     public String addAccount(Model model) {
         model.addAttribute("account", new Account());
-        model.addAttribute("accounts", listAccounts(accountRepo, HomeController.getLoggedUserId(userRepo)));
+        model.addAttribute("accounts", listAccounts(accountRepo, loggedUID(userRepo)));
 
         return "/create-account";
     }
 
     @PostMapping(value = {"/new"})
     public String saveAccount(Account account) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        account.setUserId(userRepo.findByEmail(authentication.getName()).getId());
+        account.setUserId(loggedUID(userRepo));
 
         accountRepo.save(account);
 
-        Balance balance = new Balance();
-        balance.setUserId(account.getUserId());
-        balance.setAccountId(account.getId());
-        balance.setCashBalance(account.getCashBalance());
-        balance.setInvestedBalance(account.getInvestedBalance());
-        balanceRepo.save(balance);
+        balanceRepo.save(newAccountBalance(account));
 
         return "redirect:/account/view?account-id=" + account.getId();
-    }
-
-    public static ArrayList<Account> listAccounts(AccountRepository repo, Long userId) {
-        return repo.findAllByUserId(userId);
     }
 }

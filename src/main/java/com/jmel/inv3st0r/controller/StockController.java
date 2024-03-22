@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class StockMarketController {
+public class StockController {
     @Autowired
     private StockService stockService;
 

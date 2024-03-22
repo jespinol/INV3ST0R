@@ -1,19 +1,17 @@
-package com.jmel.inv3st0r.service;
+package com.jmel.inv3st0r.util;
 
-import org.springframework.stereotype.Service;
 import com.jmel.inv3st0r.model.Account;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-@Service
-public class PieChartService {
+public class PieChart {
     private ArrayList<String> labels;
     private ArrayList<Double> balances;
     private ArrayList<String> colorsPrimary;
     private ArrayList<String> colorsSecondary;
 
-    public PieChartService(ArrayList<Account> accounts) {
+    public PieChart(ArrayList<Account> accounts) {
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<Double> balances = new ArrayList<>();
         double cashBalance = 0;

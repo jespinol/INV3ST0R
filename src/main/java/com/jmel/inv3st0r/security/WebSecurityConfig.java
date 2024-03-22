@@ -1,5 +1,5 @@
 // The following code is modified from https://www.codejava.net/frameworks/spring-boot/user-registration-and-login-tutorial
-package com.jmel.inv3st0r.service;
+package com.jmel.inv3st0r.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
