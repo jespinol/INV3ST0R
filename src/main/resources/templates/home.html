@@ -115,22 +115,20 @@
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">Fund allocation</h6>
                             </div>
-                            <!-- Card Body -->
-                            <div class="card-body">
+                            <div class="card-body"
+                                 th:with="labels=${pieCharData.getLabels()}, balances=${pieCharData.getBalances()}, colorsP=${pieCharData.getColorsPrimary()}, colorsS=${pieCharData.getColorsSecondary()}">
                                 <div class="chart-pie pt-4 pb-2">
-                                    <canvas id="myPieChart"></canvas>
+                                    <canvas id="pieChart"></canvas>
                                 </div>
                                 <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Account 1
-                                        </span>
-                                    <span class="mr-2">
-                                            <i class="fas fa-circle text-danger"></i> Account 2
-                                        </span>
-                                    <span class="mr-2">
-                                            <i class="fas fa-circle text-dark"></i> Cash
-                                        </span>
+                                    <span class="mr-2"><i class="fas fa-circle" style="color: #5A5C66"></i>[[' Cash']]</span>
                                 </div>
+                                <script th:inline="javascript">
+                                    const pieChartLabels = /*[[${labels}]]*/ [];
+                                    const pieChartData = /*[[${balances}]]*/ [];
+                                    const pieChartBackgroundColors = /*[[${colorsP}]]*/ [];
+                                    const pieChartHoverBackGroundColors = /*[[${colorsS}]]*/ [];
+                                </script>
                             </div>
                         </div>
                     </div>
