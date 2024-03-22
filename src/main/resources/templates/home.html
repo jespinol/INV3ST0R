@@ -1,37 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:replace="~{fragments :: head}"></head>
-
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:replace="~{fragments :: sidebar}"></div>
-
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
             <div th:replace="~{fragments :: topbar}"></div>
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h1 mb-0 text-gray-800">Dashboard</h1>
                 </div>
-
                 <!-- Earnings summary -->
                 <div>
                     <h4>Earnings</h4>
                 </div>
+                <!-- Top Cards -->
                 <div class="row">
-                    <!-- Earnings (Daily) Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-danger shadow h-100 py-2">
                             <div class="card-body">
@@ -49,8 +39,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
                             <div class="card-body">
@@ -68,8 +56,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Earnings (Annual) Card Example -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
@@ -87,19 +73,15 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
-                <!-- Overview-->
+                <!-- Accounts overview-->
                 <div>
                     <h4>Overview</h4>
                 </div>
                 <div class="row">
-
                     <!-- Area Chart -->
                     <div class="col-xl-8 col-lg-7">
                         <div class="card shadow mb-4">
-                            <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">Total balance</h6>
@@ -119,7 +101,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Card Body -->
                             <div class="card-body">
                                 <div class="chart-area">
                                     <canvas id="myAreaChart"></canvas>
@@ -127,11 +108,9 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Pie Chart -->
                     <div class="col-xl-4 col-lg-5">
                         <div class="card shadow mb-4">
-                            <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">Fund allocation</h6>
@@ -156,38 +135,25 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Recent -->
                 <div>
                     <h4>Recent transactions</h4>
                 </div>
-
                 <div th:each="accountTransaction : ${accountTransactions}">
                     <div th:replace="~{fragments :: txns-table-few(account=${accountTransaction})}"></div>
                 </div>
-
             </div>
-            <!-- /.container-fluid -->
-
         </div>
         <!-- End of Main Content -->
-
         <div th:replace="~{fragments :: footer}"></div>
-
     </div>
     <!-- End of Content Wrapper -->
-
 </div>
 <!-- End of Page Wrapper -->
-
 <div th:replace="~{fragments :: scroll-to-top}"></div>
-
 <div th:replace="~{fragments :: logout-modal}"></div>
-
 <div th:replace="~{fragments :: js-core}"></div>
 <div th:replace="~{fragments :: js-chart}"></div>
 <div th:replace="~{fragments :: js-table}"></div>
-
 </body>
-
 </html>

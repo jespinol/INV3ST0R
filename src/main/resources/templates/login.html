@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:fragment="head">
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>INV3ST0R</title>
-
+    <!-- HTML and scripts modified from Start Bootstrap - SB Admin 2 (https://startbootstrap.com/theme/sb-admin-2/) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
-
 </head>
-
 <body class="bg-gradient-primary">
-
 <div class="container">
-
     <!-- Outer Row -->
     <div class="row justify-content-center">
-
         <div class="col-xl-9 col-lg-9 col-md-9">
-
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
                     <!-- Nested Row within Card Body -->
@@ -37,9 +28,11 @@
                                     <h1 class="h4 text-gray-900 mb-4">Log in</h1>
                                 </div>
                                 <div th:if="${param.error}" class="alert text-center alert-danger">
-                                    Invalid username and password.</div>
+                                    Invalid username and password.
+                                </div>
                                 <div th:if="${param.logout}" class="alert text-center alert-success">
-                                    You have been logged out.</div>
+                                    You have been logged out.
+                                </div>
                                 <form class="user" th:action="@{/login}" method="post">
                                     <div class="form-group">
                                         <input type="email" class="form-control form-control-user"
@@ -48,7 +41,8 @@
                                     </div>
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
-                                               id="password" placeholder="Password" name="password" required minlength="1">
+                                               id="password" placeholder="Password" name="password" required
+                                               minlength="1">
                                     </div>
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox small">
@@ -75,13 +69,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 </div>
-
 </body>
-
 </html>
