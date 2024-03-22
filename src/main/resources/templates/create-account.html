@@ -17,7 +17,8 @@
                 <!-- Account details -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <form th:action="@{/account/new}" th:object="${account}" method="post" class="account">
+                        <form th:action="@{/account/new}" th:object="${account}" method="post" class="account"
+                              id="newAccountForm">
                             <div class="form-group">
                                 <label for="account-name">Account name</label>
                                 <input type="text" class="form-control" id="account-name" th:field="*{accountName}"
@@ -40,6 +41,13 @@
         <div th:replace="~{fragments :: footer}"></div>
     </div>
 </div>
+<script>
+    document.getElementById('newAccountForm').addEventListener('keydown', function (event) {
+        if (event.code === 'Enter') {
+            event.preventDefault();
+        }
+    });
+</script>
 <div th:replace="~{fragments :: logout-modal}"></div>
 <div th:replace="~{fragments :: js-core}"></div>
 </body>
