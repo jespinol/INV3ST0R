@@ -76,7 +76,7 @@
                 </div>
                 <!-- Accounts overview-->
                 <div>
-                    <h4>Overview</h4>
+                    <h4>My investments</h4>
                 </div>
                 <div class="row">
                     <!-- Area Chart -->
@@ -121,7 +121,9 @@
                                     <canvas id="pieChart"></canvas>
                                 </div>
                                 <div class="mt-4 text-center small">
-                                    <span class="mr-2" id="pieChartLegend"><i class="fas fa-circle" style="color: #5A5C66"></i>[[' Cash']]</span>
+                                    <span class="mr-2" id="pieChartLegend">
+                                        <i class="fas fa-circle" style="color: #5A5C66"></i>[[' Cash']]
+                                    </span>
                                 </div>
                                 <script th:inline="javascript">
                                     const pieChartLabels = /*[[${labels}]]*/ [];
@@ -134,6 +136,7 @@
                     </div>
                 </div>
                 <!-- Recent -->
+                <!-- Recent transactions -->
                 <div>
                     <h4>Recent transactions</h4>
                 </div>

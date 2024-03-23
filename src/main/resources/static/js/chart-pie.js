@@ -32,6 +32,13 @@ if (pieChartLabels.length === 0) {
                 yPadding: 15,
                 displayColors: true,
                 caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        const balance = chart.datasets[0].data[tooltipItem.index];
+                        const accountName = chart.labels[tooltipItem.index];
+                        return `${accountName}: $${number_format_chart(balance, 2)}`;
+                    }
+                }
             },
             legend: {
                 display: false
