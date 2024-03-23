@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+import static com.jmel.inv3st0r.enums.TransactionType.BUY;
+
 @Service
 public class AccountService {
     public static ArrayList<Account> listAccounts(AccountRepository repo, Long userId) {
@@ -33,7 +35,7 @@ public class AccountService {
         double oldCash = account.getCashBalance();
         double oldInvested = account.getInvestedBalance();
         double transactionCost = transaction.getTransactionPrice() * transaction.getQuantity();
-        if (transaction.getTransactionType() == Transaction.TransactionType.BUY) {
+        if (transaction.getTransactionType() == BUY) {
             account.setCashBalance(oldCash - transactionCost);
             account.setInvestedBalance(oldInvested + transactionCost);
         } else {

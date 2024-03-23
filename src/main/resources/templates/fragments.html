@@ -240,7 +240,7 @@
                 <tbody>
                 <tr th:each="transaction : ${account.value}">
                     <td>[[${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}]]</td>
-                    <td>[[${transaction.getTransactionType()}]]</td>
+                    <td th:style="${transaction.getTransactionType() == T(com.jmel.inv3st0r.enums.TransactionType).SELL ? 'color: #D9534F' : 'color: #5CB85C'}">[[${transaction.getTransactionType()}]]</td>
                     <td>[[${transaction.getSymbol()}]]</td>
                     <td>[[${transaction.getCompany()}]]</td>
                     <td style="text-align: right">[[${transaction.getQuantity()}]]</td>

@@ -19,46 +19,54 @@
                     <h4>Summary</h4>
                 </div>
                 <!-- Investment progress -->
-                <div class="card shadow mb-4"
-                     th:with="invested=${accountInfo.getInvestedBalance()}, cash=${accountInfo.getCashBalance()}">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <h4 class="font-weight-bold">Total Balance:</h4>
+<!--                <div class="row">-->
+                    <div class="card shadow mb-4"
+                         th:with="invested=${accountInfo.getInvestedBalance()}, cash=${accountInfo.getCashBalance()}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-3">
+                                    <h4 class="font-weight-bold">Total Balance:</h4>
+                                </div>
+                                <div class="col-3">
+                                    <h4 class="font-weight-bold float-right">$[[${#numbers.formatDecimal(invested + cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                                </div>
+                                <div class="col-3"></div>
                             </div>
-                            <div class="col-3">
-                                <h4 class="font-weight-bold float-right">$[[${#numbers.formatDecimal(invested + cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-3">
+                                    <h4>Invested Balance:</h4>
+                                </div>
+                                <div class="col-3">
+                                    <h4 class="float-right">$[[${#numbers.formatDecimal(invested, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-3">
+                                    <h4>Cash Balance:</h4>
+                                </div>
+                                <div class="col-3">
+                                    <h4 class="float-right"> $[[${#numbers.formatDecimal(cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                                </div>
+                                <div class="col-3"></div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <h4>Invested Balance:</h4>
+                        <!-- Investment progress bar -->
+                        <div class="card-body">
+                            <div class="progress mb-4" th:with="percentage=${(invested / (invested + cash)) * 100}">
+                                <div class="progress-bar bg-info" role="progressbar"
+                                     th:attr="style='width:'+${percentage}+'%', aria-valuenow=${percentage}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"></div>
                             </div>
-                            <div class="col-3">
-                                <h4 class="float-right">$[[${#numbers.formatDecimal(invested, 1, 'COMMA', 2, 'POINT')}]]</h4>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <h4>Cash Balance:</h4>
-                            </div>
-                            <div class="col-3">
-                                <h4 class="float-right"> $[[${#numbers.formatDecimal(cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
-                            </div>
+                            <h4 class="small font-weight-bold text-info">Invested <span
+                                    class="float-right text-gray-800">Cash</span></h4>
                         </div>
                     </div>
-                    <!-- Investment progress bar -->
-                    <div class="card-body">
-                        <div class="progress mb-4" th:with="percentage=${(invested / (invested + cash)) * 100}">
-                            <div class="progress-bar bg-info" role="progressbar"
-                                 th:attr="style='width:'+${percentage}+'%', aria-valuenow=${percentage}"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100"></div>
-                        </div>
-                        <h4 class="small font-weight-bold text-info">Invested <span
-                                class="float-right text-gray-800">Cash</span></h4>
-                    </div>
-                </div>
+<!--                </div>-->
                 <!-- Operations -->
                 <div>
                     <h4>Operations</h4>

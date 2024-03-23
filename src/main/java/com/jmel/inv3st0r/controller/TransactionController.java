@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+import static com.jmel.inv3st0r.enums.TransactionType.SELL;
 import static com.jmel.inv3st0r.service.AccountService.getOwnedStocks;
 import static com.jmel.inv3st0r.service.AccountService.updateAccount;
 import static com.jmel.inv3st0r.service.BalanceService.updateBalance;
@@ -98,7 +99,7 @@ public class TransactionController {
 
     @PostMapping(value = {"/sell"})
     public String sellStock(Transaction transaction) {
-        transaction.setTransactionType(Transaction.TransactionType.SELL);
+        transaction.setTransactionType(SELL);
         transactionRepo.save(transaction);
         updateAccount(transaction, accountRepo);
         updateStockRecord(transaction, stockRepo);

@@ -1,5 +1,6 @@
 package com.jmel.inv3st0r.model;
 
+import com.jmel.inv3st0r.enums.TransactionType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,9 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "transactions")
 public class Transaction {
-    public enum TransactionType {
-        BUY, SELL
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

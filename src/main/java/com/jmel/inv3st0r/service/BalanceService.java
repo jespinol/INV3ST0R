@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.jmel.inv3st0r.enums.TransactionType.BUY;
+
 @Service
 public class BalanceService {
     public static Balance newAccountBalance(Account account) {
@@ -26,7 +28,7 @@ public class BalanceService {
             double oldCash = balance.getCashBalance();
             double oldInvested = balance.getInvestedBalance();
             double transactionAmount = transaction.getTransactionPrice() * transaction.getQuantity();
-            if (transaction.getTransactionType() == Transaction.TransactionType.BUY) {
+            if (transaction.getTransactionType() == BUY) {
                 balance.setCashBalance(oldCash - transactionAmount);
                 balance.setInvestedBalance(oldInvested + transactionAmount);
             } else {
