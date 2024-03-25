@@ -19,7 +19,6 @@
                     <h4>Summary</h4>
                 </div>
                 <!-- Investment progress -->
-<!--                <div class="row">-->
                     <div class="card shadow mb-4"
                          th:with="invested=${accountInfo.getInvestedBalance()}, cash=${accountInfo.getCashBalance()}">
                         <div class="card-body">
@@ -66,7 +65,6 @@
                                     class="float-right text-gray-800">Cash</span></h4>
                         </div>
                     </div>
-<!--                </div>-->
                 <!-- Operations -->
                 <div>
                     <h4>Operations</h4>
@@ -89,8 +87,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="purchaseModal" tabindex="-1" role="dialog"
-                         aria-labelledby="purchaseModalLabel" aria-hidden="true" data-backdrop="static"></div>
+                    <div id="purchaseModal"></div>
                     <!-- Sell Card -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-bottom-danger shadow h-100 py-2">
@@ -108,8 +105,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="sellModal" tabindex="-1" role="dialog"
-                         aria-labelledby="sellModalLabel" aria-hidden="true" data-backdrop="static"></div>
+                    <div id="sellModal"></div>
                     <!-- Fund Card -->
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-bottom-primary shadow h-100 py-2">
@@ -127,8 +123,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="fundModal" tabindex="-1" role="dialog"
-                         aria-labelledby="fundModalLabel" aria-hidden="true" data-backdrop="static"></div>
+                    <div id="fundModal"></div>
                 </div>
                 <!-- Transaction table -->
                 <div>

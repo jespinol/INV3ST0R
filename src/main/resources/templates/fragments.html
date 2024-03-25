@@ -204,7 +204,7 @@
 </div>
 
 <!-- Transaction tables -->
-<div th:fragment="txns-table-few(account)" class="card shadow mb-4">
+<div th:fragment="txns-table-few(account)" class="card shadow mb-3">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary"><a href="#" th:text="${account.key}"></a></h6>
     </div>
@@ -230,7 +230,7 @@
                     <td>[[${transaction.getSymbol()}]]</td>
                     <td>[[${transaction.getCompany()}]]</td>
                     <td style="text-align: right">[[${transaction.getQuantity()}]]</td>
-                    <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice(), 1,
+                    <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() * transaction.getQuantity(), 1,
                         'COMMA', 2, 'POINT')}]]
                     </td>
                 </tr>
@@ -271,11 +271,13 @@
                     <tbody>
                     <tr th:each="transaction : ${transactions}">
                         <td>[[${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}]]</td>
-                        <td>[[${transaction.getTransactionType()}]]</td>
+                        <td th:style="${transaction.getTransactionType() == T(com.jmel.inv3st0r.enums.TransactionType).SELL ? 'color: #D9534F' : 'color: #5CB85C'}">
+                            [[${transaction.getTransactionType()}]]
+                        </td>
                         <td>[[${transaction.getSymbol()}]]</td>
                         <td>[[${transaction.getCompany()}]]</td>
                         <td style="text-align: right">[[${transaction.getQuantity()}]]</td>
-                        <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice(),
+                        <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() * transaction.getQuantity(),
                             1, 'COMMA', 2, 'POINT')}]]
                         </td>
                     </tr>
@@ -288,7 +290,7 @@
 
 <!-- Modals-->
 <div th:fragment="logout-modal" class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalLabel" aria-hidden="true">
+     aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
