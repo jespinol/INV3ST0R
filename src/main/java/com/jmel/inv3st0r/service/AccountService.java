@@ -14,7 +14,7 @@ import static com.jmel.inv3st0r.enums.TransactionType.BUY;
 @Service
 public class AccountService {
     public static ArrayList<Account> listAccounts(AccountRepository repo, Long userId) {
-        return repo.findAllByUserId(userId);
+        return repo.findAllByUserIdOrderByIdAsc(userId);
     }
 
     public static Account getAccount(AccountRepository repo, Long accountId) {

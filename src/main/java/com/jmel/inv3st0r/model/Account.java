@@ -9,16 +9,19 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(nullable = false)
     private Long userId;
 
-    @Column(name = "account_name", nullable = false)
+    @Column(nullable = false)
     private String accountName;
 
-    @Column(name = "cash_balance", nullable = false)
-    private double cashBalance = 10000000.00;
+    @Column(nullable = false)
+    private String accountDescription;
 
-    @Column(name = "invested_balance")
+    @Column(nullable = false)
+    private double cashBalance;
+
+    @Column
     private double investedBalance = 0;
 
     public Long getId() {
@@ -43,6 +46,14 @@ public class Account {
 
     public void setAccountName(String name) {
         this.accountName = name;
+    }
+
+    public String getAccountDescription() {
+        return accountDescription;
+    }
+
+    public void setAccountDescription(String description) {
+        this.accountDescription = description;
     }
 
     public double getCashBalance() {

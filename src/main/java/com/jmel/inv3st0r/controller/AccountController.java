@@ -1,6 +1,7 @@
 package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
+import com.jmel.inv3st0r.model.User;
 import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.BalanceRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
@@ -13,10 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 import static com.jmel.inv3st0r.service.AccountService.getAccount;
 import static com.jmel.inv3st0r.service.AccountService.listAccounts;
 import static com.jmel.inv3st0r.service.BalanceService.newAccountBalance;
 import static com.jmel.inv3st0r.service.TransactionService.listTransactions;
+import static com.jmel.inv3st0r.service.UIDService.getUserInfo;
 import static com.jmel.inv3st0r.service.UIDService.loggedUID;
 
 @Controller
@@ -46,6 +50,11 @@ public class AccountController {
             System.out.printf("User %d tried to access account %d without permission.\n", userId, accountId);
             return "redirect:/home";
         }
+        Optional<User> user_opt = userRepo.findById(userId);
+        if (user_opt.isEmpty()) {
+            return "redirect:/login";
+        }
+        model.addAttribute("userInfo", getUserInfo(user_opt.get()));
         model.addAttribute("accountInfo", account);
         model.addAttribute("transactions", listTransactions(transactionRepo, account.getId(), true));
         model.addAttribute("accounts", listAccounts(accountRepo, userId));
@@ -57,6 +66,13 @@ public class AccountController {
     public String addAccount(Model model) {
         model.addAttribute("account", new Account());
         model.addAttribute("accounts", listAccounts(accountRepo, loggedUID(userRepo)));
+        Long userId = loggedUID(userRepo);
+        Optional<User> user_opt = userRepo.findById(userId);
+        if (user_opt.isEmpty()) {
+            return "redirect:/login";
+        }
+        User user = user_opt.get();
+        model.addAttribute("userInfo", getUserInfo(user));
 
         return "/create-account";
     }

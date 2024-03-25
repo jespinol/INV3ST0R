@@ -7,5 +7,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.ArrayList;
 
 public interface AccountRepository extends CrudRepository<Account, Long> {
-    ArrayList<Account> findAllByUserId(@Param("userId") Long userId);
+    ArrayList<Account> findAllByUserIdOrderByIdAsc(@Param("userId") Long userId);
 }

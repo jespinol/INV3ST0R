@@ -22,6 +22,9 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 20)
     private String lastName;
 
+    @Column(nullable = false)
+    private String pfp = "pfp_default.svg";
+
     public Long getId() {
         return id;
     }
@@ -60,5 +63,13 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPfp() {
+        return pfp;
+    }
+
+    public void setPfp(String pfp) {
+        this.pfp = pfp;
     }
 }
