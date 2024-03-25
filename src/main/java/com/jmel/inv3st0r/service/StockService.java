@@ -3,15 +3,19 @@ package com.jmel.inv3st0r.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jmel.inv3st0r.enums.MarketStatus;
 import com.jmel.inv3st0r.enums.TransactionType;
 import com.jmel.inv3st0r.model.Stock;
 import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.repository.StockRepository;
+import com.jmel.inv3st0r.util.MarketNews;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.jmel.inv3st0r.enums.MarketStatus;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.jmel.inv3st0r.enums.MarketStatus.*;
@@ -50,13 +54,13 @@ public class StockService {
 
         boolean extendedHours = rootNode.path("afterHours").asBoolean() || rootNode.path("earlyHours").asBoolean();
 
-        sortByStatus(statusMap, extendedHours, rootNode.path("exchanges"));
-        sortByStatus(statusMap, extendedHours, rootNode.path("currencies"));
+        sortMarketsByStatus(statusMap, extendedHours, rootNode.path("exchanges"));
+        sortMarketsByStatus(statusMap, extendedHours, rootNode.path("currencies"));
 
         return statusMap;
     }
 
-    private static void sortByStatus(HashMap<MarketStatus, ArrayList<String>> statusMap, boolean extendedHours, JsonNode exchangesNode) {
+    private static void sortMarketsByStatus(HashMap<MarketStatus, ArrayList<String>> statusMap, boolean extendedHours, JsonNode exchangesNode) {
         Iterator<Map.Entry<String, JsonNode>> exchanges = exchangesNode.fields();
         while (exchanges.hasNext()) {
             Map.Entry<String, JsonNode> entry = exchanges.next();
@@ -73,6 +77,41 @@ public class StockService {
                 case "closed" -> statusMap.get(CLOSED).add(exchange);
             }
         }
+    }
+
+    public ArrayList<MarketNews> getMarketNews() throws JsonProcessingException {
+        String url = "https://api.polygon.io/v2/reference/news?apiKey=" + apiKey;
+        String response = restTemplate.getForObject(url, String.class);
+        return parseMarketNews(response);
+    }
+
+    private ArrayList<MarketNews> parseMarketNews(String response) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(response);
+
+        ArrayList<MarketNews> news = new ArrayList<>();
+        Iterator<JsonNode> newsNodes = rootNode.path("results").elements();
+        while (newsNodes.hasNext()) {
+            JsonNode newsNode = newsNodes.next();
+            MarketNews marketNews = new MarketNews();
+            marketNews.setTitle(newsNode.path("title").asText());
+
+            Instant instant = Instant.parse(newsNode.path("published_utc").asText());
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            marketNews.setDate(localDateTime);
+
+            String description = newsNode.path("description").asText();
+            if (description.length() > 200) {
+                description = description.substring(0, 200);
+            }
+            description = description + "...";
+            marketNews.setDescription(description);
+
+            marketNews.setUrl(newsNode.path("article_url").asText());
+            news.add(marketNews);
+        }
+
+        return news;
     }
 
     public static Stock createNewStockRecord(Transaction transaction) {
