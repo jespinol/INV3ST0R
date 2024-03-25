@@ -36,7 +36,7 @@ if (pieChartLabels.length === 0) {
                     label: function(tooltipItem, chart) {
                         const balance = chart.datasets[0].data[tooltipItem.index];
                         const accountName = chart.labels[tooltipItem.index];
-                        return `${accountName}: $${number_format_chart(balance, 2)}`;
+                        return `${accountName}: $${numberFormatter(balance, 2)}`;
                     }
                 }
             },

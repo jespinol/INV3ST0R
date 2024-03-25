@@ -1,9 +1,9 @@
 // HTML and scripts modified from Start Bootstrap - SB Admin 2 (https://startbootstrap.com/theme/sb-admin-2/)
-function number_format_chart(number, decimals, dec_point, thousands_sep) {
+function numberFormatter(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');
     // *     return: '1 234,56'
     number = (number + '').replace(',', '').replace(' ', '');
-    var n = !isFinite(+number) ? 0 : +number,
+    let n = !isFinite(+number) ? 0 : +number,
         prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
         sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
         dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
@@ -22,4 +22,12 @@ function number_format_chart(number, decimals, dec_point, thousands_sep) {
         s[1] += new Array(prec - s[1].length + 1).join('0');
     }
     return s.join(dec);
+}
+
+function formatToCurrency(inputId, valueId) {
+    const inputField =$(`#${inputId}`);
+    const numericValue = parseFloat(inputField.val().replace(/[^\d.-]/g, '')) || 0;
+    inputField.val(`$ ${numberFormatter(numericValue, 2)}`);
+
+    $(`#${valueId}`).val(numericValue.toFixed(2));
 }
