@@ -70,7 +70,7 @@ public class HomeController {
             model.addAttribute("lastName", user.getLastName());
             model.addAttribute("email", user.getEmail());
             model.addAttribute("pfpCurrent", user.getPfp());
-            model.addAttribute("images", Arrays.asList("pfp_default.svg", "pfp_1.svg", "pfp_2.svg", "pfp_3.svg", "pfp_4.svg"));
+            model.addAttribute("images", Arrays.asList("d.svg", "1.svg", "2.svg", "3.svg", "4.svg"));
 
             ArrayList<Account> accounts = listAccounts(accountRepo, uid);
             model.addAttribute("accounts", accounts);

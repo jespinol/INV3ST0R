@@ -37,7 +37,7 @@
                                 <div id="imageSelector" class="row" style="padding: 0.375rem 0.75rem">
                                     <div th:each="image : ${images}"
                                          class="col img-thumbnail d-flex justify-content-center align-items-center">
-                                        <img th:src="@{'/img/' + ${image}}" style="width: 100px; height: 100px;"
+                                        <img th:src="@{'/img/pfp/' + ${image}}" style="width: 100px; height: 100px;"
                                              th:classappend="${pfpCurrent.equals(image) ? 'selected' : ''}">
                                     </div>
                                 </div>
@@ -91,6 +91,5 @@
 </script>
 <div th:replace="~{fragments :: logout-modal}"></div>
 <div th:replace="~{fragments :: js-core}"></div>
-<div th:replace="~{fragments :: js-numbers}"></div>
 </body>
 </html>

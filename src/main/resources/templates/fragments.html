@@ -146,7 +146,7 @@
                th:with="first=${userInfo.get('firstName')}, last=${userInfo.get('lastName')}, pfp=${userInfo.get('pfp')}">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"
                       th:text="${first + ' ' + last}"></span>
-                <img class="img-profile rounded-circle" th:src="@{${'/img/' + pfp}}" alt="">
+                <img class="img-profile rounded-circle" th:src="@{${'/img/pfp/' + pfp}}" alt="">
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="userDropdown">
@@ -201,11 +201,6 @@
             th:src="@{/vendor/chart.js/Chart.js}"></script>
     <script src="../static/js/chart-pie.js"
             th:src="@{/js/chart-pie.js}"></script>
-</div>
-
-<div th:fragment="js-numbers">
-    <!--    <script src="../static/js/number_format.js"-->
-    <!--            th:src="@{/js/number_format.js}"></script>-->
 </div>
 
 <!-- Transaction tables -->
