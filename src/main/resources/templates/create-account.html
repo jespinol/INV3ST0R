@@ -25,14 +25,14 @@
                                        required>
                             </div>
                             <div class="form-group">
+                                <label for="cashBalanceInput">Initial funds</label>
+                                <input type="text" id="cashBalanceInput" class="form-control" onchange="formatToCurrency('cashBalanceInput', 'cashBalanceValue')" placeholder="Enter initial funds" required>
+                                <input type="hidden" id="cashBalanceValue" name="cashBalance" th:field="*{cashBalance}">
+                            </div>
+                            <div class="form-group">
                                 <label for="account-description">Description</label>
                                 <textarea type="text" class="form-control" id="account-description" placeholder="Enter a short description" th:field="*{accountDescription}" maxlength="200" required>
                                 </textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="cashBalanceInput">Initial funds</label>
-                                <input type="text" id="cashBalanceInput" class="form-control" onchange="formatToCurrency('cashBalanceInput', 'cashBalanceValue')" placeholder="$0.00" required>
-                                <input type="hidden" id="cashBalanceValue" name="cashBalance" th:field="*{cashBalance}">
                             </div>
                             <hr>
                             <button type="submit" class="btn btn-primary btn-user btn-block">
@@ -56,6 +56,5 @@
 </script>
 <div th:replace="~{fragments :: logout-modal}"></div>
 <div th:replace="~{fragments :: js-core}"></div>
-<div th:replace="~{fragments :: js-numbers}"></div>
 </body>
 </html>

@@ -73,7 +73,6 @@
                         </div>
                     </tr>
                 </div>
-                <!-- Accounts overview-->
                 <div>
                     <h4>My investments</h4>
                 </div>
@@ -105,13 +104,6 @@
                         </div>
                     </div>
                     <!-- News -->
-                    <!--                    <div class="col-xl-8 col-lg-7">-->
-                    <!--                        <div class="card shadow mb-4">-->
-                    <!--                            <div-->
-                    <!--                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">-->
-                    <!--                                <h6 class="m-0 font-weight-bold text-primary">Market news</h6>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="card-body">-->
                     <div class="col-xl-8 col-lg-7">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -147,9 +139,15 @@
                 <!-- Recent transactions -->
                 <div>
                     <h4>Recent transactions</h4>
-                </div>
-                <div th:each="accountTransaction : ${accountTransactions}">
-                    <div th:replace="~{fragments :: txns-table-few(account=${accountTransaction})}"></div>
+                    <div class="card shadow mb-4">
+                        <div class="card-body" style="overflow-y: scroll;">
+                            <div style="height: 30rem;">
+                                <tr th:each="accountTransaction : ${accountTransactions}">
+                                    <div th:replace="~{fragments :: txns-table-few(account=${accountTransaction})}"></div>
+                                </tr>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
