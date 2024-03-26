@@ -75,7 +75,7 @@ public class HomeController {
             ArrayList<Account> accounts = listAccounts(accountRepo, uid);
             model.addAttribute("accounts", accounts);
 
-            return "/edit-profile";
+            return "/profile-edit";
         }
 
         return "redirect:/home";

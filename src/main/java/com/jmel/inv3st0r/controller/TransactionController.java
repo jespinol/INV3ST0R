@@ -48,7 +48,7 @@ public class TransactionController {
         Account account = getAccount(accountId);
         model.addAttribute("accountInfo", account);
 
-        return "/fund";
+        return "/transaction-fund";
     }
 
     @PostMapping(value = {"/fund"})
@@ -72,7 +72,7 @@ public class TransactionController {
 
         model.addAttribute("newTransaction", new Transaction());
 
-        return "/purchase";
+        return "/transaction-purchase";
     }
 
     @PostMapping(value = {"/purchase"})
@@ -94,7 +94,7 @@ public class TransactionController {
 
         model.addAttribute("ownedStocks", getOwnedStocks(accountId, stockRepo));
 
-        return "/sell";
+        return "/transaction-sell";
     }
 
     @PostMapping(value = {"/sell"})

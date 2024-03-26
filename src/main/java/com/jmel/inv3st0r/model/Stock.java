@@ -9,20 +9,22 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "account_id", nullable = false)
+    @Column(nullable = false)
     private Long accountId;
 
-    @Column(name = "symbol", nullable = false)
+    @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private String symbol;
 
-    @Column(name = "company", nullable = false)
+    @Column(nullable = false)
     private String company;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(nullable = false)
     private int quantity;
 
-
-    @Column(name = "last_price")
+    @Column
     private double lastPrice;
 
     public void setId(Long id) {
@@ -39,6 +41,14 @@ public class Stock {
 
     public void setAccountId(Long accountId) {
         this.accountId = accountId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getSymbol() {

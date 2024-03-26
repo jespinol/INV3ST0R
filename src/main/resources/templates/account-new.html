@@ -40,9 +40,19 @@
                                 </textarea>
                             </div>
                             <hr>
-                            <button type="submit" class="btn btn-primary btn-user btn-block">
-                                Create Account
-                            </button>
+                            <div class="row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        Create account
+                                    </button>
+                                </div>
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <a href="/home" th:href="@{/home}" class="btn btn-danger btn-user btn-block"
+                                       style="text-decoration: none;">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

@@ -40,7 +40,7 @@
                         </div>
                         <div class="col">
                             <input type="text" id="pricePerStockInput" class="form-control" readonly>
-                            <input type="hidden" id="pricePerStockValue" class="form-control" th:field="${newTransaction.transactionPrice}">
+                            <input type="hidden" id="pricePerStockValue" class="form-control" th:field="*{transactionPrice}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -49,7 +49,7 @@
                         </div>
                         <div class="col">
                             <input type="text" id="quantity" name="quantity" class="form-control" min="1"
-                                   oninput="calculateTotal()" th:field="${newTransaction.quantity}">
+                                   oninput="calculateTotal()" th:field="*{quantity}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -60,9 +60,9 @@
                             <input type="text" id="totalSaleInput" class="form-control" readonly>
                         </div>
                     </div>
-                    <input type="hidden" id="stock-symbol" th:field="${newTransaction.symbol}">
-                    <input type="hidden" id="stock-company" th:field="${newTransaction.company}">
-                    <input type="hidden" id="account-id" th:field="${newTransaction.accountId}">
+                    <input type="hidden" id="stock-symbol" th:field="*{symbol}">
+                    <input type="hidden" id="stock-company" th:field="*{company}">
+                    <input type="hidden" id="account-id" th:field="*{accountId}">
                 </form>
             </div>
             <div class="modal-footer">

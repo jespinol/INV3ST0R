@@ -23,7 +23,7 @@ public class SingInUpController {
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
 
-        return "/register";
+        return "/profile-new";
     }
 
     @PostMapping("/register")
@@ -33,6 +33,8 @@ public class SingInUpController {
         user.setPassword(encodedPassword);
 
         userRepo.save(user);
+
+
 
         return "redirect:/login";
     }

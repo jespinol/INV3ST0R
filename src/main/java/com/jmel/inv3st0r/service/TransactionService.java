@@ -10,12 +10,12 @@ import java.util.HashMap;
 
 @Service
 public class TransactionService {
-    public static HashMap<String, ArrayList<Transaction>> listTransactionsPerAccount(ArrayList<Account> accounts, TransactionRepository repo) {
-        HashMap<String, ArrayList<Transaction>> accountTransactions = new HashMap<>();
+    public static HashMap<Account, ArrayList<Transaction>> listTransactionsPerAccount(ArrayList<Account> accounts, TransactionRepository repo) {
+        HashMap<Account, ArrayList<Transaction>> accountTransactions = new HashMap<>();
         for (Account account : accounts) {
             ArrayList<Transaction> transactions = listTransactions(repo, account.getId(), false);
             if (transactions.size() > 0) {
-                accountTransactions.put(account.getAccountName(), transactions);
+                accountTransactions.put(account, transactions);
             }
         }
         return accountTransactions;

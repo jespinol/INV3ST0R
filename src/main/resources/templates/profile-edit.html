@@ -48,7 +48,7 @@
                             <div class="row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <button type="submit" class="btn btn-primary btn-user btn-block">
-                                        Save
+                                        Save changes
                                     </button>
                                 </div>
                                 <div class="col-sm-6 mb-3 mb-sm-0">
@@ -59,6 +59,19 @@
                                 </div>
                             </div>
                         </form>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="font-weight-bold">Deactivate INV3$T0R profile</div>
+                                <p>If you deactivate your profile, all positions will be liquidated. Funds, if any, will be
+                                    available for transfer within 7 business days.</p>
+                                <button class="btn btn-warning btn-user btn-block" id="deleteButton">
+                                    Deactivate profile
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -67,9 +80,17 @@
         <div th:replace="~{fragments :: footer}"></div>
     </div>
 </div>
-<script>
+<script th:inline="javascript">
     $(document).ready(function () {
         $('#imageSelector .img-thumbnail img.selected').parent().css('border', '1px solid #4E73DF');
+    });
+
+    $('#deleteButton').on('click', function () {
+        const firstName = /*[[${firstName}]]*/ "";
+        const lastName = /*[[${lastName}]]*/ "";
+        if (confirm(`${firstName} ${lastName}, your profile will be deactivated!\n\nThis action cannot be undone.`)) {
+            window.location.href = /*[[@{'/deactivate?uid=' + ${uid}}]]*/ "";
+        }
     });
 
     $(document).keydown(function (event) {

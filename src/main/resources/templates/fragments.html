@@ -71,7 +71,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <div class="col" th:text="${account.getAccountDescription()}"></div>
                     <div class="dropdown-divider"></div>
-                    <a class="collapse-item" href="overview.html"
+                    <a class="collapse-item" href="account-view.html"
                        th:href="@{'/account/view?account-id='+${account.getId()}}">Go to account&nbsp;<i
                             class="fas fa-fw fa-arrow-right"></i></a>
                 </div>
@@ -206,7 +206,9 @@
 <!-- Transaction tables -->
 <div th:fragment="txns-table-few(account)" class="card shadow mb-3">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary"><a href="#" th:text="${account.key}"></a></h6>
+        <h6 class="m-0 font-weight-bold text-primary"><a href="#"
+                                                         th:href="@{'/account/view?account-id='+${account.key.getId()}}"
+                                                         th:text="${account.key.getAccountName()}"></a></h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -230,7 +232,8 @@
                     <td>[[${transaction.getSymbol()}]]</td>
                     <td>[[${transaction.getCompany()}]]</td>
                     <td style="text-align: right">[[${transaction.getQuantity()}]]</td>
-                    <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() * transaction.getQuantity(), 1,
+                    <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() *
+                        transaction.getQuantity(), 1,
                         'COMMA', 2, 'POINT')}]]
                     </td>
                 </tr>
@@ -277,7 +280,8 @@
                         <td>[[${transaction.getSymbol()}]]</td>
                         <td>[[${transaction.getCompany()}]]</td>
                         <td style="text-align: right">[[${transaction.getQuantity()}]]</td>
-                        <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() * transaction.getQuantity(),
+                        <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() *
+                            transaction.getQuantity(),
                             1, 'COMMA', 2, 'POINT')}]]
                         </td>
                     </tr>
