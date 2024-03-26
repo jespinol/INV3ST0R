@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body id="page-top">
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <div th:replace="~{fragments :: sidebar}"></div>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <div th:replace="~{fragments :: topbar}"></div>
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <h1 class="h1 mb-4 text-gray-800">Edit account ([[${account.getAccountName()}]])</h1>
+                <!-- Account details -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/account/edit}" method="post" class="account" id="editAccountForm"
+                              autocomplete="off">
+                            <div class="form-group">
+                                <label for="account-name">Name</label>
+                                <input type="text" class="form-control" id="account-name" name="account-name"
+                                       th:value="${account.getAccountName()}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="account-description">Description</label>
+                                <textarea type="text" class="form-control" id="account-description"
+                                          name="account-description" th:text="${account.getAccountDescription()}"
+                                          maxlength="200" required>
+                                </textarea>
+                            </div>
+                            <input type="hidden" name="account-id" th:value="${account.getId()}">
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        Save changes
+                                    </button>
+                                </div>
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <a href="#" th:href="@{'/account/view?account-id=' + ${account.getId()}}"
+                                       class="btn btn-danger btn-user btn-block"
+                                       style="text-decoration: none;">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="font-weight-bold">Close account</div>
+                                <p>If you close this account, its positions will be liquidated. Funds, if any, will be
+                                    available for transfer within 7 business days.</p>
+                                <button class="btn btn-warning btn-user btn-block" id="deleteButton">
+                                    Close account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Main Content -->
+        <div th:replace="~{fragments :: footer}"></div>
+    </div>
+</div>
+<script th:inline="javascript">
+    $(document).keydown(function (event) {
+        if (event.code === 'Enter' || event.code === 'Escape') {
+            event.preventDefault();
+        }
+    });
+
+    $(document).ready(function () {
+        $('#deleteButton').on('click', function () {
+            const accountName = /*[[${account.getAccountName()}]]*/ "";
+            if (confirm(`Account '${accountName}' will be closed!\n\nThis action cannot be undone.`)) {
+                window.location.href = /*[[@{'/account/delete?account-id=' + ${account.getId()}}]]*/ "";
+            }
+        });
+    });
+</script>
+<div th:replace="~{fragments :: logout-modal}"></div>
+<div th:replace="~{fragments :: js-core}"></div>
+</body>
+</html>

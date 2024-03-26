@@ -6,8 +6,12 @@ import com.jmel.inv3st0r.model.User;
 import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
 import com.jmel.inv3st0r.repository.UserRepository;
+import com.jmel.inv3st0r.repository.CurrentUser;
+import com.jmel.inv3st0r.security.CustomUserDetails;
 import com.jmel.inv3st0r.service.StockService;
 import com.jmel.inv3st0r.util.PieChart;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -94,5 +98,31 @@ public class HomeController {
         }
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/deactivate")
+    public String deactivateAccount(@RequestParam("uid") Long uid, HttpServletRequest request, HttpServletResponse response) {
+        Long loggedUID = loggedUID(userRepo);
+        if (!loggedUID.equals(uid)) {
+            System.out.printf("User %d tried to deactivate profile %d without permission.\n", loggedUID, uid);
+            return "redirect:/home";
+        }
+
+        Optional<User> user_opt = userRepo.findById(uid);
+        if (user_opt.isPresent()) {
+            User user = user_opt.get();
+            userRepo.delete(user);
+//            Optional<Balance> balance_opt = balanceRepo.findByAccountId(accountId);
+//            balance_opt.ifPresent(balance -> balanceRepo.delete(balance));
+//            transactionRepo.deleteAll(transactionRepo.findAllByAccountIdOrderByIdDesc(accountId));
+//            stockRepo.deleteAll(stockRepo.findAllByAccountId(accountId));
+        }
+
+        SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        ctxLogOut.logout(request, response, auth);
+
+
+        return "/login";
     }
 }
