@@ -13,25 +13,25 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Page Heading -->
-                <h1 class="h1 mb-4 text-gray-800">Edit account ([[${account.getAccountName()}]])</h1>
+                <h1 class="h1 mb-4 text-gray-800" th:text="|Edit account (${accountInfo.getAccountName()})|"></h1>
                 <!-- Account details -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
                         <form th:action="@{/account/edit}" method="post" class="account" id="editAccountForm"
                               autocomplete="off">
                             <div class="form-group">
-                                <label for="account-name">Name</label>
-                                <input type="text" class="form-control" id="account-name" name="account-name"
-                                       th:value="${account.getAccountName()}" required>
+                                <label for="accountName">Name</label>
+                                <input type="text" class="form-control" id="accountName" name="accountName"
+                                       th:value="${accountInfo.getAccountName()}" required>
                             </div>
                             <div class="form-group">
                                 <label for="account-description">Description</label>
                                 <textarea type="text" class="form-control" id="account-description"
-                                          name="account-description" th:text="${account.getAccountDescription()}"
+                                          name="account-description" th:text="${accountInfo.getAccountDescription()}"
                                           maxlength="200" required>
                                 </textarea>
                             </div>
-                            <input type="hidden" name="account-id" th:value="${account.getId()}">
+                            <input type="hidden" name="accountId" th:value="${accountInfo.getId()}">
                             <hr>
                             <div class="row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
@@ -40,7 +40,7 @@
                                     </button>
                                 </div>
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <a href="#" th:href="@{'/account/view?account-id=' + ${account.getId()}}"
+                                    <a href="#" th:href="@{|/account/view?accountId=__${accountInfo.getId()}__|}"
                                        class="btn btn-danger btn-user btn-block"
                                        style="text-decoration: none;">
                                         Cancel
@@ -78,9 +78,9 @@
 
     $(document).ready(function () {
         $('#deleteButton').on('click', function () {
-            const accountName = /*[[${account.getAccountName()}]]*/ "";
+            const accountName = /*[[${accountInfo.getAccountName()}]]*/ "";
             if (confirm(`Account '${accountName}' will be closed!\n\nThis action cannot be undone.`)) {
-                window.location.href = /*[[@{'/account/delete?account-id=' + ${account.getId()}}]]*/ "";
+                window.location.href = /*[[@{|/account/delete?accountId=__${accountInfo.getId()}__|}]]*/ "";
             }
         });
     });
