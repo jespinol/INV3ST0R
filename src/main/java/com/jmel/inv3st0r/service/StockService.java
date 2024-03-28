@@ -37,45 +37,40 @@ public class StockService {
         return restTemplate.getForObject(url, String.class);
     }
 
-    public HashMap<MarketStatus, ArrayList<String>> getMarketStatus() throws JsonProcessingException {
+    public HashMap<String, MarketStatus> getMarketStatus() throws JsonProcessingException {
         String url = "https://api.polygon.io/v1/marketstatus/now?apiKey=" + apiKey;
         String response = restTemplate.getForObject(url, String.class);
         return parseMarketStatus(response);
     }
 
-    private static HashMap<MarketStatus, ArrayList<String>> parseMarketStatus(String jsonResponse) throws JsonProcessingException {
+    private static HashMap<String, MarketStatus> parseMarketStatus(String jsonResponse) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(jsonResponse);
 
-        HashMap<MarketStatus, ArrayList<String>> statusMap = new HashMap<>();
-        statusMap.put(OPEN, new ArrayList<>());
-        statusMap.put(CLOSED, new ArrayList<>());
-        statusMap.put(EXTENDED, new ArrayList<>());
+        HashMap<String, MarketStatus> statusMap = new HashMap<>();
 
-        boolean extendedHours = rootNode.path("afterHours").asBoolean() || rootNode.path("earlyHours").asBoolean();
+        boolean isEarlyOrAfterHours = rootNode.path("afterHours").asBoolean() || rootNode.path("earlyHours").asBoolean();
 
-        sortMarketsByStatus(statusMap, extendedHours, rootNode.path("exchanges"));
-        sortMarketsByStatus(statusMap, extendedHours, rootNode.path("currencies"));
+        addMarketsByStatus(statusMap, isEarlyOrAfterHours, rootNode.path("exchanges"));
+        addMarketsByStatus(statusMap, isEarlyOrAfterHours, rootNode.path("currencies"));
 
         return statusMap;
     }
 
-    private static void sortMarketsByStatus(HashMap<MarketStatus, ArrayList<String>> statusMap, boolean extendedHours, JsonNode exchangesNode) {
-        Iterator<Map.Entry<String, JsonNode>> exchanges = exchangesNode.fields();
-        while (exchanges.hasNext()) {
-            Map.Entry<String, JsonNode> entry = exchanges.next();
-            String exchange = entry.getKey().toUpperCase();
+    private static void addMarketsByStatus(HashMap<String, MarketStatus> statusMap, boolean isEarlyOrAfterHours, JsonNode marketsNode) {
+        Iterator<Map.Entry<String, JsonNode>> markets = marketsNode.fields();
+        while (markets.hasNext()) {
+            Map.Entry<String, JsonNode> entry = markets.next();
+            String market = entry.getKey().toUpperCase();
             String status = entry.getValue().asText();
-            switch (status) {
-                case "open", "extended-hours" -> {
-                    if (extendedHours) {
-                        statusMap.get(EXTENDED).add(exchange);
-                    } else {
-                        statusMap.get(OPEN).add(exchange);
-                    }
-                }
-                case "closed" -> statusMap.get(CLOSED).add(exchange);
+
+            MarketStatus marketStatus;
+            if ("open".equals(status) || "extended-hours".equals(status)) {
+                marketStatus = isEarlyOrAfterHours ? EXTENDED : OPEN;
+            } else {
+                marketStatus = CLOSED;
             }
+            statusMap.put(market, marketStatus);
         }
     }
 
@@ -117,6 +112,7 @@ public class StockService {
     public static Stock createNewStockRecord(Transaction transaction) {
         Stock stock = new Stock();
         stock.setAccountId(transaction.getAccountId());
+        stock.setUserId(transaction.getUserId());
         stock.setSymbol(transaction.getSymbol());
         stock.setCompany(transaction.getCompany());
         stock.setQuantity(transaction.getQuantity());
@@ -127,17 +123,18 @@ public class StockService {
 
     public static void updateStockRecord(Transaction transaction, StockRepository repo) {
         Optional<Stock> stock_opt = repo.findBySymbolAndAccountId(transaction.getSymbol(), transaction.getAccountId());
+        Stock stock;
         if (stock_opt.isPresent()) {
-            Stock stock = stock_opt.get();
+            stock = stock_opt.get();
             if (transaction.getTransactionType() == TransactionType.BUY) {
                 stock.setQuantity(stock.getQuantity() + transaction.getQuantity());
             } else {
                 stock.setQuantity(stock.getQuantity() - transaction.getQuantity());
             }
-            repo.save(stock);
-            return;
+        } else {
+            stock = createNewStockRecord(transaction);
         }
 
-        repo.save(createNewStockRecord(transaction));
+        repo.save(stock);
     }
 }

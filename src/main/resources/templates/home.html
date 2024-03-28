@@ -20,52 +20,19 @@
                 <div>
                     <h4>Markets</h4>
                 </div>
-                <div class="row"
-                     th:with="mo=${markets.get(T(com.jmel.inv3st0r.enums.MarketStatus).OPEN)}, mc=${markets.get(T(com.jmel.inv3st0r.enums.MarketStatus).CLOSED)}, me=${markets.get(T(com.jmel.inv3st0r.enums.MarketStatus).EXTENDED)}">
-                    <tr th:each="open : ${mo}">
-                        <div class="col mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
+                <div class="row">
+                    <tr th:each="market : ${marketStatus}">
+                        <div class="col mb-4" th:with="status=${market.getValue()}">
+                            <div class="card shadow h-100 py-2"
+                                 th:classappend="${status == T(com.jmel.inv3st0r.enums.MarketStatus).CLOSED} ? 'border-left-danger' : (${status == T(com.jmel.inv3st0r.enums.MarketStatus).OPEN} ? 'border-left-success': 'border-left-warning')">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Open
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${open}"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </tr>
-                    <tr th:each="extended : ${me}">
-                        <div class="col mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning mb-1">
-                                                Extended Hours
-                                            </div>
+                                            <div class="text-xs font-weight-bold text-uppercase mb-1"
+                                                 th:classappend="${status == T(com.jmel.inv3st0r.enums.MarketStatus).CLOSED} ? 'text-danger' : (${status == T(com.jmel.inv3st0r.enums.MarketStatus).OPEN} ? 'text-success': 'text-warning')"
+                                                 th:text="${status == T(com.jmel.inv3st0r.enums.MarketStatus).CLOSED} ? 'CLOSED' : (${status == T(com.jmel.inv3st0r.enums.MarketStatus).OPEN} ? 'OPEN': 'EXTENDED HOURS')"></div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"
-                                                 th:text="${extended}"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </tr>
-                    <tr th:each="closed : ${mc}">
-                        <div class="col mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                Closed
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-500"
-                                                 th:text="${closed}"></div>
+                                                 th:text="${market.getKey()}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -91,7 +58,8 @@
                                                 <tbody>
                                                 <tr>
                                                     <td>
-                                                        <span class="font-weight-bold" th:text="${news.getTitle()}+':'"></span>
+                                                        <span class="font-weight-bold"
+                                                              th:text="${news.getTitle()} + ':'"></span>
                                                         <span th:text="${news.getDescription()}"></span>
                                                         <a th:href="${news.getUrl()}" target="_blank"
                                                            rel="noopener noreferrer">(more)</a>
