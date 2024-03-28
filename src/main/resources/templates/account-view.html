@@ -13,8 +13,8 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Page Heading -->
-                <span class="h1 mb-4 text-gray-800" th:text="${accountInfo.getAccountName()} + ' '"></span>
-                <span><a href="#" th:href="@{'/account/edit?account-id=' + ${accountInfo.getId()}}"><i class="fas fa-edit"></i></a></span>
+                <span class="h1 mb-4 text-gray-800" th:text="|${accountInfo.getAccountName()} |"></span>
+                <span><a href="#" th:href="@{|/account/edit?accountId=__${accountInfo.getId()}__|}"><i class="fas fa-edit"></i></a></span>
                 <!-- Account summary -->
                 <div>
                     <h4>Summary</h4>
@@ -29,7 +29,7 @@
                                     <h4 class="font-weight-bold">Total Balance:</h4>
                                 </div>
                                 <div class="col-3">
-                                    <h4 class="font-weight-bold float-right">$[[${#numbers.formatDecimal(invested + cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                                    <h4 class="font-weight-bold float-right" th:text="'$ ' + ${#numbers.formatDecimal(invested + cash, 1, 'COMMA', 2, 'POINT')}"></h4>
                                 </div>
                                 <div class="col-3"></div>
                             </div>
@@ -39,7 +39,7 @@
                                     <h4>Invested Balance:</h4>
                                 </div>
                                 <div class="col-3">
-                                    <h4 class="float-right">$[[${#numbers.formatDecimal(invested, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                                    <h4 class="float-right" th:text="'$ ' + ${#numbers.formatDecimal(invested, 1, 'COMMA', 2, 'POINT')}"></h4>
                                 </div>
                                 <div class="col-3"></div>
                             </div>
@@ -49,7 +49,7 @@
                                     <h4>Cash Balance:</h4>
                                 </div>
                                 <div class="col-3">
-                                    <h4 class="float-right"> $[[${#numbers.formatDecimal(cash, 1, 'COMMA', 2, 'POINT')}]]</h4>
+                                    <h4 class="float-right" th:text="'$ ' + ${#numbers.formatDecimal(cash, 1, 'COMMA', 2, 'POINT')}"></h4>
                                 </div>
                                 <div class="col-3"></div>
                             </div>
@@ -58,7 +58,7 @@
                         <div class="card-body">
                             <div class="progress mb-4" th:with="percentage=${(invested / (invested + cash)) * 100}">
                                 <div class="progress-bar bg-info" role="progressbar"
-                                     th:attr="style='width:'+${percentage}+'%', aria-valuenow=${percentage}"
+                                     th:attr="style='width:' + ${percentage} + '%', aria-valuenow=${percentage}"
                                      aria-valuemin="0"
                                      aria-valuemax="100"></div>
                             </div>
@@ -139,7 +139,7 @@
     <script>
         function getModalContent(action) {
             let modal = `#${action}Modal`;
-            let path = `/transaction/${action}?account-id=[[${accountInfo.getId()}]]`;
+            let path = `/transaction/${action}?accountId=[[${accountInfo.getId()}]]`;
             fetch(path)
                 .then(response => response.text())
                 .then(data => {

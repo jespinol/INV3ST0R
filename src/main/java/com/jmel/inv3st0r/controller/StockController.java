@@ -13,12 +13,12 @@ public class StockController {
     @Autowired
     private StockService stockService;
 
-    @GetMapping(value = "/search-stock", produces = "application/json")
+    @GetMapping(value = "/searchStock", produces = "application/json")
     public String searchStock(@RequestParam String query) {
         return stockService.searchStock(query);
     }
 
-    @GetMapping(value = "/stock-price", produces = "application/json")
+    @GetMapping(value = "/stockPrice", produces = "application/json")
     public String getStockPrice(@RequestParam String symbol) {
         return stockService.getStockPrice(symbol);
     }

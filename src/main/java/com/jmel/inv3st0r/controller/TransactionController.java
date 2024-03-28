@@ -43,61 +43,54 @@ public class TransactionController {
         return account_opt.orElse(null);
     }
 
-    @GetMapping(value = {"/fund"})
-    public String showFundForm(Model model, @RequestParam("account-id") Long accountId) {
-        Account account = getAccount(accountId);
-        model.addAttribute("accountInfo", account);
+    @GetMapping("/fund")
+    public String showFundForm(Model model, @RequestParam("accountId") Long accountId) {
+        model.addAttribute("accountInfo", getAccount(accountId));
 
         return "/transaction-fund";
     }
 
-    @PostMapping(value = {"/fund"})
-    public String fundAccount(@RequestParam("account-id") Long accountId, @RequestParam("fund-amount") double fundAmount) {
+    @PostMapping("/fund")
+    public String fundAccount(@RequestParam("accountId") Long accountId, @RequestParam("fundAmount") double fundAmount) {
         Account account = getAccount(accountId);
         account.setCashBalance(account.getCashBalance() + fundAmount);
         accountRepo.save(account);
-
 
         Balance balance = balanceRepo.findByAccountId(accountId).orElse(new Balance());
         balance.setCashBalance(balance.getCashBalance() + fundAmount);
         balanceRepo.save(balance);
 
-        return "redirect:/account/view?account-id=" + accountId;
+        return "redirect:/account/view?accountId=" + accountId;
     }
 
-    @GetMapping(value = {"/purchase"})
-    public String showPurchaseForm(Model model, @RequestParam("account-id") Long accountId) {
-        Account account = getAccount(accountId);
-        model.addAttribute("accountInfo", account);
-
+    @GetMapping("/purchase")
+    public String showPurchaseForm(Model model, @RequestParam("accountId") Long accountId) {
+        model.addAttribute("accountInfo", getAccount(accountId));
         model.addAttribute("newTransaction", new Transaction());
 
         return "/transaction-purchase";
     }
 
-    @PostMapping(value = {"/purchase"})
+    @PostMapping("/purchase")
     public String buyStock(Transaction transaction) {
         transactionRepo.save(transaction);
         updateAccount(transaction, accountRepo);
         updateStockRecord(transaction, stockRepo);
         updateBalance(transaction, balanceRepo);
 
-        return "redirect:/account/view?account-id=" + transaction.getAccountId();
+        return "redirect:/account/view?accountId=" + transaction.getAccountId();
     }
 
-    @GetMapping(value = {"/sell"})
-    public String showSaleForm(Model model, @RequestParam("account-id") Long accountId) {
-        Account account = getAccount(accountId);
-        model.addAttribute("accountInfo", account);
-
+    @GetMapping("/sell")
+    public String showSaleForm(Model model, @RequestParam("accountId") Long accountId) {
+        model.addAttribute("accountInfo", getAccount(accountId));
         model.addAttribute("newTransaction", new Transaction());
-
         model.addAttribute("ownedStocks", getOwnedStocks(accountId, stockRepo));
 
         return "/transaction-sell";
     }
 
-    @PostMapping(value = {"/sell"})
+    @PostMapping("/sell")
     public String sellStock(Transaction transaction) {
         transaction.setTransactionType(SELL);
         transactionRepo.save(transaction);
@@ -105,6 +98,6 @@ public class TransactionController {
         updateStockRecord(transaction, stockRepo);
         updateBalance(transaction, balanceRepo);
 
-        return "redirect:/account/view?account-id=" + transaction.getAccountId();
+        return "redirect:/account/view?accountId=" + transaction.getAccountId();
     }
 }

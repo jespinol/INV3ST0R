@@ -61,18 +61,18 @@
     </div>
     <tr th:each="account : ${accounts}">
         <li class="nav-item">
-            <a th:attr="data-target='#collapseAccount'+${account.getId()}, aria-controls='collapse'+${account.getId()}"
+            <a th:attr="data-target='#collapseAccount' + ${account.getId()}, aria-controls=|collapse${account.getId()}|"
                class="nav-link collapsed" href="#" data-toggle="collapse" aria-expanded="true">
                 <i class="fas fa-fw fa-dollar-sign"></i>
                 <span th:text="${account.getAccountName()}"></span>
             </a>
-            <div th:attr="id='collapseAccount'+${account.getId()}, aria-labelledby='heading'+${account.getId()}"
+            <div th:attr="id=|collapseAccount${account.getId()}|, aria-labelledby=|heading${account.getId()}|"
                  class="collapse" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <div class="col" th:text="${account.getAccountDescription()}"></div>
                     <div class="dropdown-divider"></div>
                     <a class="collapse-item" href="account-view.html"
-                       th:href="@{'/account/view?account-id='+${account.getId()}}">Go to account&nbsp;<i
+                       th:href="@{|/account/view?accountId=__${account.getId()}__|}">Go to account&nbsp;<i
                             class="fas fa-fw fa-arrow-right"></i></a>
                 </div>
             </div>
@@ -142,11 +142,10 @@
         <!-- User Information -->
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               th:with="first=${userInfo.get('firstName')}, last=${userInfo.get('lastName')}, pfp=${userInfo.get('pfp')}">
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"
-                      th:text="${first + ' ' + last}"></span>
-                <img class="img-profile rounded-circle" th:src="@{${'/img/pfp/' + pfp}}" alt="">
+                      th:text="${userInfo.getFullName()}"></span>
+                <img class="img-profile rounded-circle" th:src="@{|/img/pfp/__${userInfo.getPfp()}__|}" alt="">
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="userDropdown">
@@ -207,7 +206,7 @@
 <div th:fragment="txns-table-few(account)" class="card shadow mb-3">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary"><a href="#"
-                                                         th:href="@{'/account/view?account-id='+${account.key.getId()}}"
+                                                         th:href="@{|/account/view?accountId=__${account.key.getId()}__|}"
                                                          th:text="${account.key.getAccountName()}"></a></h6>
     </div>
     <div class="card-body">
@@ -225,17 +224,14 @@
                 </thead>
                 <tbody>
                 <tr th:each="transaction : ${account.value}">
-                    <td>[[${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}]]</td>
-                    <td th:style="${transaction.getTransactionType() == T(com.jmel.inv3st0r.enums.TransactionType).SELL ? 'color: #D9534F' : 'color: #5CB85C'}">
-                        [[${transaction.getTransactionType()}]]
-                    </td>
-                    <td>[[${transaction.getSymbol()}]]</td>
-                    <td>[[${transaction.getCompany()}]]</td>
-                    <td style="text-align: right">[[${transaction.getQuantity()}]]</td>
-                    <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() *
-                        transaction.getQuantity(), 1,
-                        'COMMA', 2, 'POINT')}]]
-                    </td>
+                    <td th:text="${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}"></td>
+                    <td th:style="${transaction.getTransactionType() == T(com.jmel.inv3st0r.enums.TransactionType).SELL ? 'color: #D9534F' : 'color: #5CB85C'}"
+                        th:text="${transaction.getTransactionType()}"></td>
+                    <td th:text="${transaction.getSymbol()}"></td>
+                    <td th:text="${transaction.getCompany()}"></td>
+                    <td style="text-align: right" th:text="${transaction.getQuantity()}"></td>
+                    <td style="text-align: right"
+                        th:text="'$ ' + ${#numbers.formatDecimal(transaction.getTransactionPrice() * transaction.getQuantity(), 1,'COMMA', 2, 'POINT')}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -273,17 +269,14 @@
                     </tfoot>
                     <tbody>
                     <tr th:each="transaction : ${transactions}">
-                        <td>[[${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}]]</td>
-                        <td th:style="${transaction.getTransactionType() == T(com.jmel.inv3st0r.enums.TransactionType).SELL ? 'color: #D9534F' : 'color: #5CB85C'}">
-                            [[${transaction.getTransactionType()}]]
-                        </td>
-                        <td>[[${transaction.getSymbol()}]]</td>
-                        <td>[[${transaction.getCompany()}]]</td>
-                        <td style="text-align: right">[[${transaction.getQuantity()}]]</td>
-                        <td style="text-align: right">[['$'+${#numbers.formatDecimal(transaction.getTransactionPrice() *
-                            transaction.getQuantity(),
-                            1, 'COMMA', 2, 'POINT')}]]
-                        </td>
+                        <td th:text="${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}"></td>
+                        <td th:style="${transaction.getTransactionType() == T(com.jmel.inv3st0r.enums.TransactionType).SELL ? 'color: #D9534F' : 'color: #5CB85C'}"
+                            th:text="${transaction.getTransactionType()}"></td>
+                        <td th:text="${transaction.getSymbol()}"></td>
+                        <td th:text="${transaction.getCompany()}"></td>
+                        <td style="text-align: right" th:text="${transaction.getQuantity()}"></td>
+                        <td style="text-align: right"
+                            th:text="'$ ' + ${#numbers.formatDecimal(transaction.getTransactionPrice() * transaction.getQuantity(), 1,'COMMA', 2, 'POINT')}"></td>
                     </tr>
                     </tbody>
                 </table>

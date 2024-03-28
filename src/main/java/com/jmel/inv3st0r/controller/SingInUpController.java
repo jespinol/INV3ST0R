@@ -14,7 +14,7 @@ public class SingInUpController {
     @Autowired
     private UserRepository userRepo;
 
-    @GetMapping(value = {"/login"})
+    @GetMapping("/login")
     public String showLoginForm() {
         return "/login";
     }
@@ -33,8 +33,6 @@ public class SingInUpController {
         user.setPassword(encodedPassword);
 
         userRepo.save(user);
-
-
 
         return "redirect:/login";
     }

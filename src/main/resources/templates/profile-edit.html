@@ -23,13 +23,13 @@
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <label for="firstName">First name</label>
                                     <input type="text" class="form-control form-control-user" id="firstName"
-                                           name="firstName" th:value="${firstName}" minlength="2" maxlength="20"
+                                           name="firstName" th:value="${userInfo.getFirstName()}" minlength="1" maxlength="20"
                                            required>
                                 </div>
                                 <div class="col-sm-6">
                                     <label for="lastName">Last name</label>
                                     <input type="text" class="form-control form-control-user" id="lastName"
-                                           name="lastName" th:value="${lastName}" minlength="2" maxlength="20" required>
+                                           name="lastName" th:value="${userInfo.getLastName()}" minlength="1" maxlength="20" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -37,13 +37,12 @@
                                 <div id="imageSelector" class="row" style="padding: 0.375rem 0.75rem">
                                     <div th:each="image : ${images}"
                                          class="col img-thumbnail d-flex justify-content-center align-items-center">
-                                        <img th:src="@{'/img/pfp/' + ${image}}" style="width: 100px; height: 100px;"
-                                             th:classappend="${pfpCurrent.equals(image) ? 'selected' : ''}">
+                                        <img th:src="@{|/img/pfp/__${image}__|}" style="width: 100px; height: 100px;"
+                                             th:classappend="${userInfo.getPfp().equals(image) ? 'selected' : ''}">
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" id="selectedImage" name="pfp" th:value="${pfp}">
-                            <input type="hidden" name="uid" th:value="${uid}">
+                            <input type="hidden" id="selectedImage" name="pfp" th:value="${userInfo.getPfp()}">
                             <hr>
                             <div class="row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
@@ -81,21 +80,21 @@
     </div>
 </div>
 <script th:inline="javascript">
+    $(document).keydown(function (event) {
+        if (event.code === 'Enter' || event.code === 'Escape') {
+            event.preventDefault();
+        }
+    });
+
     $(document).ready(function () {
         $('#imageSelector .img-thumbnail img.selected').parent().css('border', '1px solid #4E73DF');
     });
 
     $('#deleteButton').on('click', function () {
-        const firstName = /*[[${firstName}]]*/ "";
-        const lastName = /*[[${lastName}]]*/ "";
+        const firstName = /*[[${userInfo.getFirstName()}]]*/ "";
+        const lastName = /*[[${userInfo.getLastName()}]]*/ "";
         if (confirm(`${firstName} ${lastName}, your profile will be deactivated!\n\nThis action cannot be undone.`)) {
-            window.location.href = /*[[@{'/deactivate?uid=' + ${uid}}]]*/ "";
-        }
-    });
-
-    $(document).keydown(function (event) {
-        if (event.code === 'Enter') {
-            event.preventDefault();
+            window.location.href = /*[[@{/deactivate}]]*/ "";
         }
     });
 

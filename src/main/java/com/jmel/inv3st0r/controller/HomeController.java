@@ -96,6 +96,6 @@ public class HomeController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         ctxLogOut.logout(request, response, auth);
 
-        return "/login";
+        return "redirect:/login";
     }
 }

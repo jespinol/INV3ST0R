@@ -17,11 +17,11 @@
                 <!-- Account details -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <form th:action="@{/account/new}" th:object="${account}" method="post" class="account"
+                        <form th:action="@{/account/new}" th:object="${newAccount}" method="post" class="account"
                               id="newAccountForm" autocomplete="off">
                             <div class="form-group">
-                                <label for="account-name">Name</label>
-                                <input type="text" class="form-control" id="account-name"
+                                <label for="accountName">Name</label>
+                                <input type="text" class="form-control" id="accountName"
                                        placeholder="Enter an account name" th:field="*{accountName}"
                                        required>
                             </div>
@@ -33,12 +33,13 @@
                                 <input type="hidden" id="cashBalanceValue" name="cashBalance" th:field="*{cashBalance}">
                             </div>
                             <div class="form-group">
-                                <label for="account-description">Description</label>
-                                <textarea type="text" class="form-control" id="account-description"
+                                <label for="accountDescription">Description</label>
+                                <textarea type="text" class="form-control" id="accountDescription"
                                           placeholder="Enter a short description" th:field="*{accountDescription}"
                                           maxlength="200" required>
                                 </textarea>
                             </div>
+                            <input type="hidden" th:field="*{userId}">
                             <hr>
                             <div class="row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
@@ -63,8 +64,8 @@
     </div>
 </div>
 <script>
-    document.getElementById('newAccountForm').addEventListener('keydown', function (event) {
-        if (event.code === 'Enter') {
+    $(document).keydown(function (event) {
+        if (event.code === 'Enter' || event.code === 'Escape') {
             event.preventDefault();
         }
     });
