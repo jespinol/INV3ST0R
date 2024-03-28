@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document" xmlns="http://www.w3.org/1999/html">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="saleModalLabel">Sell ([[${accountInfo.getAccountName()}]])</h5>
+                <h5 class="modal-title" id="saleModalLabel" th:text="|Sell (${accountInfo.getAccountName()})|"></h5>
             </div>
             <div class="modal-body">
                 <form id="stockSaleForm" th:action="@{/transaction/sell}" th:object="${newTransaction}" method="post"
@@ -15,11 +15,11 @@
                         </div>
                         <div class="col">
                             <div class="input-group">
-                                <select class="form-control" id="stock-selector">
+                                <select class="form-control" id="stockSelector">
                                     <option value="0"></option>
                                     <option th:each="stock : ${ownedStocks}"
                                             th:with="s=${stock.getSymbol()}, c=${stock.getCompany()}, q=${stock.getQuantity()}"
-                                            th:value="${s} " th:text="${s} + ' (' + ${c} + ')'"
+                                            th:value="${s} " th:text="|${s} (${c})|"
                                             th:attr="data-owned=${q}, data-symbol=${s}, data-company=${c}"></option>
                                 </select>
                             </div>
@@ -31,7 +31,7 @@
                             Quantity owned
                         </div>
                         <div class="col">
-                            <input type="text" id="quantity-owned" name="quantity-owned" class="form-control" readonly>
+                            <input type="text" id="quantityOwned" name="quantityOwned" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -40,7 +40,8 @@
                         </div>
                         <div class="col">
                             <input type="text" id="pricePerStockInput" class="form-control" readonly>
-                            <input type="hidden" id="pricePerStockValue" class="form-control" th:field="*{transactionPrice}">
+                            <input type="hidden" id="pricePerStockValue" class="form-control"
+                                   th:field="*{transactionPrice}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -60,65 +61,88 @@
                             <input type="text" id="totalSaleInput" class="form-control" readonly>
                         </div>
                     </div>
-                    <input type="hidden" id="stock-symbol" th:field="*{symbol}">
-                    <input type="hidden" id="stock-company" th:field="*{company}">
-                    <input type="hidden" id="account-id" th:field="*{accountId}">
+                    <input type="hidden" id="stockSymbol" th:field="*{symbol}">
+                    <input type="hidden" id="stockCompany" th:field="*{company}">
+                    <input type="hidden" id="accountId" th:field="*{accountId}">
+                    <input type="hidden" id="userId" th:field="*{userId}">
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" type="button" id="cancel-button">Cancel</button>
-                <button type="button" class="btn btn-primary" id="sell-button">Sell</button>
+                <button class="btn btn-danger" type="button" id="cancelButton">Cancel</button>
+                <button type="button" class="btn btn-primary" id="sellButton">Sell</button>
             </div>
             <script>
-                document.getElementById('stockSaleForm').addEventListener('keydown', (event) => preventDefaultEvents(event));
+                document.getElementById('accountId').value = [[${accountInfo.getId()}]];
+                document.getElementById('userId').value = [[${accountInfo.getUserId()}]];
 
-                document.getElementById('stock-selector').addEventListener('change', selectStock);
+                $(document).keydown(function (event) {
+                    if (event.code === 'Enter' || event.code === 'Escape') {
+                        event.preventDefault();
+                    }
+                });
 
-                document.getElementById('cancel-button').addEventListener('click', resetForm);
+                document.getElementById('stockSelector').addEventListener('change', selectStock);
 
-                document.getElementById('sell-button').addEventListener('click', sellButtonAction);
+                document.getElementById('cancelButton').addEventListener('click', resetForm);
 
-                var currentPrice = 0;
+                document.getElementById('sellButton').addEventListener('click', sellButtonAction);
+
+                var sellPrice = 0;
 
                 function selectStock() {
-                    const selector = $('#stock-selector');
-                    $('#quantity-owned').val(selector.find(':selected').attr('data-owned'));
+                    const selector = $('#stockSelector');
+                    $('#quantityOwned').val(selector.find(':selected').attr('data-owned'));
                     const symbol = selector.find(':selected').attr('data-symbol');
 
-                    fetch(`/api/stock-price?symbol=${encodeURIComponent(symbol)}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.results && data.results.length > 0) {
-                                currentPrice = data.results[0].c;
-                                document.getElementById('pricePerStockValue').value = currentPrice.toFixed(2);
-                                $('#pricePerStockInput').val(`$ ${numberFormatter(currentPrice, 2)}`);
-                                document.getElementById('stock-symbol').value = symbol;
-                                document.getElementById('stock-company').value = $('#stock-selector').find(':selected').attr('data-company');
-                                document.getElementById('account-id').value = [[${accountInfo.getId()}]];
-                            }
-                        })
-                        .catch(error => console.error('Error fetching stock data:', error));
+                    if (!symbol) {
+                        document.getElementById('pricePerStockValue').value = 0;
+                        document.getElementById('pricePerStockInput').value = 0;
+                        document.getElementById('stockSymbol').value = "";
+                        document.getElementById('stockCompany').value = "";
+                        sellPrice = 0;
+                        toggleButton(document.getElementById('sellButton'), false);
+                    } else {
+                        fetch(`/api/stockPrice?symbol=${encodeURIComponent(symbol)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.results && data.results.length > 0) {
+                                    sellPrice = data.results[0].c;
+                                    document.getElementById('pricePerStockValue').value = sellPrice.toFixed(2);
+                                    $('#pricePerStockInput').val(`$ ${numberFormatter(sellPrice, 2)}`);
+                                    document.getElementById('stockSymbol').value = symbol;
+                                    document.getElementById('stockCompany').value = $('#stockSelector').find(':selected').attr('data-company');
+                                    calculateTotal();
+                                }
+                            })
+                            .catch(error => console.error('Error fetching stock data:', error));
+                    }
                 }
 
                 function calculateTotal() {
                     const quantity = parseInt(document.getElementById('quantity').value);
-                    const totalCost = quantity * currentPrice;
+                    const totalCost = quantity * sellPrice;
                     $('#totalSaleInput').val(`$ ${numberFormatter(totalCost, 2)}`);
                 }
 
                 function sellButtonAction() {
-                    const button = document.getElementById('sell-button');
+                    const button = document.getElementById('sellButton');
                     const total = parseFloat(document.getElementById('pricePerStockValue').value);
+                    const quantity = parseInt(document.getElementById('quantity').value);
+                    const owned = parseInt(document.getElementById('quantityOwned').value);
 
-                    if (total > 0) {
+                    if (quantity > owned) {
+                        alert('You cannot sell more stocks than you own.');
+                    } else if (quantity > 0 && total > 0.00) {
                         if (button.textContent === 'Sell') {
                             toggleButton(button, true);
+                            return;
                         } else if (button.textContent === 'Confirm') {
                             document.getElementById('stockSaleForm').submit();
                         }
                     } else {
-                        alert('Please select a valid stock and quantity before buying.');
+                        alert('Please select a valid stock and quantity before selling.');
                     }
+                    toggleButton(button, false);
                 }
 
                 function toggleButton(button, turnOn) {
@@ -133,20 +157,12 @@
                     }
                 }
 
-                function preventDefaultEvents(event) {
-                    if (event.code === 'Enter') {
-                        event.preventDefault();
-                    } else if (event.code === 'Escape') {
-                        event.preventDefault();
-                    }
-                }
-
                 function resetForm() {
                     document.getElementById('stockSaleForm').reset();
 
-                    toggleButton(document.getElementById('sell-button'), false);
+                    toggleButton(document.getElementById('sellButton'), false);
 
-                    currentPrice = 0;
+                    sellPrice = 0;
 
                     $('#sellModal').modal('hide');
                     $('#sellModal').html('')
