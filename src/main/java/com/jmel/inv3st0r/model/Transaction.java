@@ -16,6 +16,9 @@ public class Transaction {
     private Long accountId;
 
     @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private TransactionType transactionType = TransactionType.BUY;
 
     @Column(nullable = false)
@@ -47,6 +50,14 @@ public class Transaction {
 
     public void setAccountId(Long accountId) {
         this.accountId = accountId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public TransactionType getTransactionType() {

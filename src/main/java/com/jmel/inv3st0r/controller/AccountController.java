@@ -2,8 +2,8 @@ package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
 import com.jmel.inv3st0r.model.Balance;
-import com.jmel.inv3st0r.model.User;
 import com.jmel.inv3st0r.repository.*;
+import com.jmel.inv3st0r.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,17 +18,12 @@ import static com.jmel.inv3st0r.service.AccountService.getAccount;
 import static com.jmel.inv3st0r.service.AccountService.listAccounts;
 import static com.jmel.inv3st0r.service.BalanceService.newAccountBalance;
 import static com.jmel.inv3st0r.service.TransactionService.listTransactions;
-import static com.jmel.inv3st0r.service.UIDService.getUserInfo;
-import static com.jmel.inv3st0r.service.UIDService.loggedUID;
 
 @Controller
 @RequestMapping("/account")
 public class AccountController {
     @Autowired
     private AccountRepository accountRepo;
-
-    @Autowired
-    private UserRepository userRepo;
 
     @Autowired
     private TransactionRepository transactionRepo;
@@ -39,23 +34,20 @@ public class AccountController {
     @Autowired
     private StockRepository stockRepo;
 
-    @GetMapping(value = {"/view"})
-    public String viewAccount(Model model, @RequestParam("account-id") Long accountId) {
+    @GetMapping("/view")
+    public String viewAccount(@CurrentUser CustomUserDetails userDetails, Model model, @RequestParam("accountId") Long accountId) {
         Account account = getAccount(accountRepo, accountId);
         if (account == null) {
             return "redirect:/home";
         }
 
-        Long userId = loggedUID(userRepo);
-        if (!account.getUserId().equals(userId)) {
+        Long userId = userDetails.getUserId();
+        if (!account.getUserId().equals(userDetails.getUserId())) {
             System.out.printf("User %d tried to access account %d without permission.\n", userId, accountId);
             return "redirect:/home";
         }
-        Optional<User> user_opt = userRepo.findById(userId);
-        if (user_opt.isEmpty()) {
-            return "redirect:/login";
-        }
-        model.addAttribute("userInfo", getUserInfo(user_opt.get()));
+
+        model.addAttribute("userInfo", userDetails);
         model.addAttribute("accountInfo", account);
         model.addAttribute("transactions", listTransactions(transactionRepo, account.getId(), true));
         model.addAttribute("accounts", listAccounts(accountRepo, userId));
@@ -63,57 +55,45 @@ public class AccountController {
         return "/account-view";
     }
 
-    @GetMapping(value = {"/new"})
-    public String createAccount(Model model) {
-        model.addAttribute("account", new Account());
-        Long userId = loggedUID(userRepo);
-        model.addAttribute("accounts", listAccounts(accountRepo, userId));
-        Optional<User> user_opt = userRepo.findById(userId);
-        if (user_opt.isEmpty()) {
-            return "redirect:/login";
-        }
-        User user = user_opt.get();
-        model.addAttribute("userInfo", getUserInfo(user));
+    @GetMapping("/new")
+    public String createAccount(@CurrentUser CustomUserDetails userDetails, Model model) {
+        model.addAttribute("newAccount", new Account());
+        model.addAttribute("accounts", listAccounts(accountRepo, userDetails.getUserId()));
+        model.addAttribute("userInfo", userDetails);
 
         return "/account-new";
     }
 
-    @PostMapping(value = {"/new"})
-    public String saveNewAccount(Account account) {
-        account.setUserId(loggedUID(userRepo));
+    @PostMapping("/new")
+    public String saveNewAccount(@CurrentUser CustomUserDetails userDetails, Account account) {
+        account.setUserId(userDetails.getUserId());
 
         accountRepo.save(account);
 
         balanceRepo.save(newAccountBalance(account));
 
-        return "redirect:/account/view?account-id=" + account.getId();
+        return "redirect:/account/view?accountId=" + account.getId();
     }
 
-    @GetMapping(value = {"/edit"})
-    public String editAccount(Model model, @RequestParam("account-id") Long accountId) {
-        Long userId = loggedUID(userRepo);
-        model.addAttribute("accounts", listAccounts(accountRepo, userId));
+    @GetMapping("/edit")
+    public String editAccount(@CurrentUser CustomUserDetails userDetails, Model model, @RequestParam("accountId") Long accountId) {
+        Long userId = userDetails.getUserId();
 
-        Optional<User> user_opt = userRepo.findById(userId);
-        if (user_opt.isEmpty()) {
-            return "redirect:/login";
-        }
-
-        User user = user_opt.get();
         Account account = getAccount(accountRepo, accountId);
         if (!account.getUserId().equals(userId)) {
             System.out.printf("User %d tried to edit account %d without permission.\n", userId, accountId);
             return "redirect:/home";
         }
 
-        model.addAttribute("userInfo", getUserInfo(user));
-        model.addAttribute("account", account);
+        model.addAttribute("accounts", listAccounts(accountRepo, userId));
+        model.addAttribute("userInfo", userDetails);
+        model.addAttribute("accountInfo", account);
 
         return "/account-edit";
     }
 
-    @PostMapping(value = {"/edit"})
-    public String saveEditAccount(@RequestParam("account-id") Long accountId, @RequestParam("account-name") String accountName, @RequestParam("account-description") String accountDescription) {
+    @PostMapping("/edit")
+    public String saveEditAccount(@RequestParam("accountId") Long accountId, @RequestParam("accountName") String accountName, @RequestParam("account-description") String accountDescription) {
         Account account = getAccount(accountRepo, accountId);
         if (account == null) {
             return "redirect:/home";
@@ -123,17 +103,17 @@ public class AccountController {
         account.setAccountDescription(accountDescription);
         accountRepo.save(account);
 
-        return "redirect:/account/view?account-id=" + accountId;
+        return "redirect:/account/view?accountId=" + accountId;
     }
 
-    @GetMapping(value = {"/delete"})
-    public String deleteAccount(@RequestParam("account-id") Long accountId) {
+    @GetMapping("/delete")
+    public String deleteAccount(@CurrentUser CustomUserDetails userDetails, @RequestParam("accountId") Long accountId) {
         Account account = getAccount(accountRepo, accountId);
         if (account == null) {
             return "redirect:/home";
         }
 
-        Long userId = loggedUID(userRepo);
+        Long userId = userDetails.getUserId();
         if (!account.getUserId().equals(userId)) {
             System.out.printf("User %d tried to delete account %d without permission.\n", userId, accountId);
             return "redirect:/home";
