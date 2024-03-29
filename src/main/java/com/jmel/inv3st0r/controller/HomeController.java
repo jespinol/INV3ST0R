@@ -61,7 +61,7 @@ public class HomeController {
     @GetMapping("/profile")
     public String viewProfile(@CurrentUser CustomUserDetails userDetails, Model model) {
         model.addAttribute("userInfo", userDetails);
-        model.addAttribute("images", Arrays.asList("d.svg", "1.svg", "2.svg", "3.svg", "4.svg"));
+        model.addAttribute("images", Arrays.asList("d.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png"));
         model.addAttribute("accounts", listAccounts(accountRepo, userDetails.getUserId()));
 
         return "/profile-edit";

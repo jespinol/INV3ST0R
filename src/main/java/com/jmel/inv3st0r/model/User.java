@@ -23,7 +23,7 @@ public class User {
     private String lastName;
 
     @Column(nullable = false)
-    private String pfp = "d.svg";
+    private String pfp = "d.png";
 
     public Long getId() {
         return id;
