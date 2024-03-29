@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class SingInUpController {
+public class SignInUpController {
     @Autowired
     private UserRepository userRepo;
 
