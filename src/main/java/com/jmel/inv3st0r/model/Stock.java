@@ -3,7 +3,7 @@ package com.jmel.inv3st0r.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "stocks")
+@Table(name = "stock")
 public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

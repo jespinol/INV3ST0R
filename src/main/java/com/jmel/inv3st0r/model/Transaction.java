@@ -2,24 +2,24 @@ package com.jmel.inv3st0r.model;
 
 import com.jmel.inv3st0r.enums.TransactionType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transaction")
 public class Transaction {
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "account_id")
+    private Account account;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Long accountId;
-
-    @Column(nullable = false)
-    private Long userId;
-
-    @Column(nullable = false)
-    private TransactionType transactionType = TransactionType.BUY;
+    private TransactionType transactionType;
 
     @Column(nullable = false)
     private LocalDateTime transactionDate = LocalDateTime.now();
@@ -42,22 +42,6 @@ public class Transaction {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public TransactionType getTransactionType() {
@@ -106,5 +90,13 @@ public class Transaction {
 
     public void setTransactionPrice(double transactionPrice) {
         this.transactionPrice = transactionPrice;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

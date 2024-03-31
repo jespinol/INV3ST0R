@@ -3,7 +3,7 @@ package com.jmel.inv3st0r.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "balances")
+@Table(name = "balance")
 public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,6 +11,7 @@ public class Balance {
 
     @Column(name = "userId", nullable = false)
     private Long userId;
+
     @Column(name = "account_id", nullable = false)
     private Long accountId;
 
