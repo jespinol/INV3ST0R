@@ -4,16 +4,17 @@ import com.jmel.inv3st0r.model.Account;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PieChart {
-    private ArrayList<String> labels;
-    private ArrayList<Double> balances;
-    private ArrayList<String> colorsPrimary;
-    private ArrayList<String> colorsSecondary;
+    private List<String> labels;
+    private List<Double> balances;
+    private List<String> colorsPrimary;
+    private List<String> colorsSecondary;
 
-    public PieChart(ArrayList<Account> accounts) {
-        ArrayList<String> labels = new ArrayList<>();
-        ArrayList<Double> balances = new ArrayList<>();
+    public PieChart(List<Account> accounts) {
+        List<String> labels = new ArrayList<>();
+        List<Double> balances = new ArrayList<>();
         double cashBalance = 0;
 
         for (Account account : accounts) {
@@ -33,28 +34,28 @@ public class PieChart {
         setColorsSecondary(getColorsPrimary());
     }
 
-    public ArrayList<String> getLabels() {
+    public List<String> getLabels() {
         return labels;
     }
 
-    public void setLabels(ArrayList<String> labels) {
+    public void setLabels(List<String> labels) {
         this.labels = labels;
     }
 
-    public ArrayList<Double> getBalances() {
+    public List<Double> getBalances() {
         return balances;
     }
 
-    public void setBalances(ArrayList<Double> balances) {
+    public void setBalances(List<Double> balances) {
         this.balances = balances;
     }
 
-    public ArrayList<String> getColorsPrimary() {
+    public List<String> getColorsPrimary() {
         return colorsPrimary;
     }
 
     public void setColorsPrimary(int size) {
-        ArrayList<String> colorsPrimary = new ArrayList<>();
+        List<String> colorsPrimary = new ArrayList<>();
         String[] baseColors = {
                 "#5672D8", // Blue
                 "#4CAF50", // Green
@@ -75,12 +76,12 @@ public class PieChart {
         this.colorsPrimary = colorsPrimary;
     }
 
-    public ArrayList<String> getColorsSecondary() {
+    public List<String> getColorsSecondary() {
         return colorsSecondary;
     }
 
-    public void setColorsSecondary(ArrayList<String> colorsPrimary) {
-        ArrayList<String> colorsSecondary = new ArrayList<>();
+    public void setColorsSecondary(List<String> colorsPrimary) {
+        List<String> colorsSecondary = new ArrayList<>();
 
         for (String color : colorsPrimary) {
             Color original = Color.decode(color);
