@@ -63,8 +63,7 @@
                     </div>
                     <input type="hidden" id="stockSymbol" th:field="*{symbol}">
                     <input type="hidden" id="stockCompany" th:field="*{company}">
-                    <input type="hidden" id="accountId" th:field="*{accountId}">
-                    <input type="hidden" id="userId" th:field="*{userId}">
+                    <input type="hidden" id="accountId" name="accountId">
                 </form>
             </div>
             <div class="modal-footer">
@@ -73,7 +72,6 @@
             </div>
             <script>
                 document.getElementById('accountId').value = [[${accountInfo.getId()}]];
-                document.getElementById('userId').value = [[${accountInfo.getUser().getId()}]];
 
                 $(document).keydown(function (event) {
                     if (event.code === 'Enter' || event.code === 'Escape') {

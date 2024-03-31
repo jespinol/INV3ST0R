@@ -64,8 +64,7 @@
                     </div>
                     <input type="hidden" id="stockSymbol" th:field="*{symbol}">
                     <input type="hidden" id="stockCompany" th:field="*{company}">
-                    <input type="hidden" id="accountId" th:field="*{accountId}">
-                    <input type="hidden" id="userId" th:field="*{userId}">
+                    <input type="hidden" id="accountId" name="accountId">
                 </form>
             </div>
             <div class="modal-footer">
@@ -73,6 +72,8 @@
                 <button class="btn btn-primary" type="button" id="buyButton">Buy</button>
             </div>
             <script>
+                document.getElementById('accountId').value = [[${accountInfo.getId()}]];
+
                 document.getElementById('stockPurchaseForm').addEventListener('keydown', (event) => preventDefaultEvents(event));
 
                 document.getElementById('cancelButton').addEventListener('click', resetForm);
@@ -127,8 +128,6 @@
                     document.getElementById('stockSelector').value = `${symbol} (${name})`;
                     document.getElementById('stockSymbol').value = symbol;
                     document.getElementById('stockCompany').value = name;
-                    document.getElementById('accountId').value = [[${accountInfo.getId()}]];
-                    document.getElementById('userId').value = [[${accountInfo.getUser().getId()}]];
 
                     fetch(`/api/stockPrice?symbol=${encodeURIComponent(symbol)}`)
                         .then(response => response.json())

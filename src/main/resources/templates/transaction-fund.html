@@ -67,6 +67,8 @@
                 <button class="btn btn-primary" type="button" id="fundButton">Fund</button>
             </div>
             <script>
+                document.getElementById('accountId').value = [[${accountInfo.getId()}]];
+
                 $(document).keydown(function (event) {
                     if (event.code === 'Enter' || event.code === 'Escape') {
                         event.preventDefault();
@@ -86,7 +88,6 @@
                             toggleButton(button, true);
                             return;
                         } else if (button.textContent === 'Confirm') {
-                            document.getElementById('accountId').value = [[${accountInfo.getId()}]];
                             document.getElementById('accountFundForm').submit();
                         }
                     } else {
