@@ -73,7 +73,7 @@
             </div>
             <script>
                 document.getElementById('accountId').value = [[${accountInfo.getId()}]];
-                document.getElementById('userId').value = [[${accountInfo.getUserId()}]];
+                document.getElementById('userId').value = [[${accountInfo.getUser().getId()}]];
 
                 $(document).keydown(function (event) {
                     if (event.code === 'Enter' || event.code === 'Escape') {

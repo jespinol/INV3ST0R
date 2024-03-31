@@ -59,7 +59,7 @@
     <div class="sidebar-heading">
         Accounts
     </div>
-    <tr th:each="account : ${accounts}">
+    <tr th:each="account : ${accountsList}">
         <li class="nav-item">
             <a th:attr="data-target='#collapseAccount' + ${account.getId()}, aria-controls=|collapse${account.getId()}|"
                class="nav-link collapsed" href="#" data-toggle="collapse" aria-expanded="true">

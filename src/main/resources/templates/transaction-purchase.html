@@ -128,7 +128,7 @@
                     document.getElementById('stockSymbol').value = symbol;
                     document.getElementById('stockCompany').value = name;
                     document.getElementById('accountId').value = [[${accountInfo.getId()}]];
-                    document.getElementById('userId').value = [[${accountInfo.getUserId()}]];
+                    document.getElementById('userId').value = [[${accountInfo.getUser().getId()}]];
 
                     fetch(`/api/stockPrice?symbol=${encodeURIComponent(symbol)}`)
                         .then(response => response.json())
