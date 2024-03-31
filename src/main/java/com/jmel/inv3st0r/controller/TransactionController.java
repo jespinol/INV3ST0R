@@ -1,26 +1,20 @@
 package com.jmel.inv3st0r.controller;
 
 import com.jmel.inv3st0r.model.Account;
-import com.jmel.inv3st0r.model.Balance;
 import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.BalanceRepository;
 import com.jmel.inv3st0r.repository.StockRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
+import static com.jmel.inv3st0r.enums.TransactionType.BUY;
 import static com.jmel.inv3st0r.enums.TransactionType.SELL;
 import static com.jmel.inv3st0r.service.AccountService.getOwnedStocks;
-import static com.jmel.inv3st0r.service.AccountService.updateAccount;
-import static com.jmel.inv3st0r.service.BalanceService.updateBalance;
 import static com.jmel.inv3st0r.service.StockService.updateStockRecord;
 
 @Controller
@@ -35,69 +29,83 @@ public class TransactionController {
     @Autowired
     private StockRepository stockRepo;
 
-    @Autowired
-    private BalanceRepository balanceRepo;
-
-    private Account getAccount(Long accountId) {
-        Optional<Account> account_opt = accountRepo.findById(accountId);
-        return account_opt.orElse(null);
-    }
-
     @GetMapping("/fund")
     public String showFundForm(Model model, @RequestParam("accountId") Long accountId) {
-        model.addAttribute("accountInfo", getAccount(accountId));
 
-        return "/transaction-fund";
+        return accountRepo.findById(accountId)
+                .map(account -> {
+                    model.addAttribute("accountInfo", account);
+
+                    return "/transaction-fund";
+                })
+                .orElse("redirect:/home");
     }
 
     @PostMapping("/fund")
     public String fundAccount(@RequestParam("accountId") Long accountId, @RequestParam("fundAmount") double fundAmount) {
-        Account account = getAccount(accountId);
-        account.setCashBalance(account.getCashBalance() + fundAmount);
-        accountRepo.save(account);
 
-        Balance balance = balanceRepo.findByAccountId(accountId).orElse(new Balance());
-        balance.setCashBalance(balance.getCashBalance() + fundAmount);
-        balanceRepo.save(balance);
+        return accountRepo.findById(accountId)
+                .map(account -> {
+                    account.setCashBalance(account.getCashBalance() + fundAmount);
+                    accountRepo.save(account);
 
-        return "redirect:/account/view?accountId=" + accountId;
+                    return "redirect:/account/view?accountId=" + accountId;
+                })
+                .orElse("redirect:/home");
+
+//        Balance balance = balanceRepo.findByAccountId(accountId).orElse(new Balance());
+//        balance.setCashBalance(balance.getCashBalance() + fundAmount);
+//        balanceRepo.save(balance);
     }
 
     @GetMapping("/purchase")
     public String showPurchaseForm(Model model, @RequestParam("accountId") Long accountId) {
-        model.addAttribute("accountInfo", getAccount(accountId));
-        model.addAttribute("newTransaction", new Transaction());
 
-        return "/transaction-purchase";
+        return accountRepo.findById(accountId)
+                .map(account -> {
+                    model.addAttribute("accountInfo", account);
+                    model.addAttribute("newTransaction", new Transaction());
+
+                    return "/transaction-purchase";
+                })
+                .orElse("redirect:/home");
     }
 
     @PostMapping("/purchase")
-    public String buyStock(Transaction transaction) {
+    public String buyStock(Transaction transaction, @RequestParam("accountId") Long accountId) {
+        transaction.setTransactionType(BUY);
+        transaction.setAccount(accountRepo.findById(accountId).get());
         transactionRepo.save(transaction);
-        updateAccount(transaction, accountRepo);
-        updateStockRecord(transaction, stockRepo);
-        updateBalance(transaction, balanceRepo);
+//        updateAccount(transaction, accountRepo);
+        updateStockRecord(transaction, stockRepo); // could be replaced by db query
+//        updateBalance(transaction, balanceRepo);
 
-        return "redirect:/account/view?accountId=" + transaction.getAccountId();
+        return "redirect:/account/view?accountId=" + transaction.getAccount().getId();
     }
 
     @GetMapping("/sell")
     public String showSaleForm(Model model, @RequestParam("accountId") Long accountId) {
-        model.addAttribute("accountInfo", getAccount(accountId));
-        model.addAttribute("newTransaction", new Transaction());
-        model.addAttribute("ownedStocks", getOwnedStocks(accountId, stockRepo));
 
-        return "/transaction-sell";
+        return accountRepo.findById(accountId)
+                .map(account -> {
+                    model.addAttribute("accountInfo", account);
+                    model.addAttribute("newTransaction", new Transaction());
+                    model.addAttribute("ownedStocks", getOwnedStocks(accountId, stockRepo));
+
+                    return "/transaction-sell";
+                })
+                .orElse("redirect:/home");
     }
 
     @PostMapping("/sell")
-    public String sellStock(Transaction transaction) {
+    public String sellStock(Transaction transaction, @RequestParam("accountId") Long accountId) {
         transaction.setTransactionType(SELL);
+        transaction.setAccount(accountRepo.findById(accountId).get());
         transactionRepo.save(transaction);
-        updateAccount(transaction, accountRepo);
-        updateStockRecord(transaction, stockRepo);
-        updateBalance(transaction, balanceRepo);
+//        updateAccount(transaction, accountRepo);
+//        updateStockRecord(transaction, stockRepo);
+//        updateBalance(transaction, balanceRepo);
 
-        return "redirect:/account/view?accountId=" + transaction.getAccountId();
+        return "redirect:/account/view?accountId=" + transaction.getAccount().getId();
     }
 }

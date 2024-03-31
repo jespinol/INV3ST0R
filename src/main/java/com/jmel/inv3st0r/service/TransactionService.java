@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class TransactionService {
-    public static HashMap<Account, ArrayList<Transaction>> listTransactionsPerAccount(ArrayList<Account> accounts, TransactionRepository repo) {
-        HashMap<Account, ArrayList<Transaction>> accountTransactions = new HashMap<>();
+    public static HashMap<Account, List<Transaction>> getTransactionsByAccounts(List<Account> accounts) {
+        HashMap<Account, List<Transaction>> accountTransactions = new HashMap<>();
         for (Account account : accounts) {
-            ArrayList<Transaction> transactions = listTransactions(repo, account.getId(), false);
+            List<Transaction> transactions = account.getTransactions();
             if (transactions.size() > 0) {
                 accountTransactions.put(account, transactions);
             }

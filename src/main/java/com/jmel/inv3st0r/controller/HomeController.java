@@ -1,11 +1,8 @@
 package com.jmel.inv3st0r.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.jmel.inv3st0r.model.Account;
 import com.jmel.inv3st0r.model.User;
-import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.CurrentUser;
-import com.jmel.inv3st0r.repository.TransactionRepository;
 import com.jmel.inv3st0r.repository.UserRepository;
 import com.jmel.inv3st0r.security.CustomUserDetails;
 import com.jmel.inv3st0r.service.StockService;
@@ -22,12 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.jmel.inv3st0r.service.AccountService.listAccounts;
-import static com.jmel.inv3st0r.service.TransactionService.listTransactionsPerAccount;
+import static com.jmel.inv3st0r.service.TransactionService.getTransactionsByAccounts;
 
 @Controller
 public class HomeController {
@@ -35,36 +30,41 @@ public class HomeController {
     private UserRepository userRepo;
 
     @Autowired
-    private AccountRepository accountRepo;
-
-    @Autowired
-    private TransactionRepository transactionRepo;
-
-    @Autowired
     private StockService stockService;
 
     @GetMapping(value = {"/", "/home"})
-    public String viewHomePage(@CurrentUser CustomUserDetails userDetails, Model model) throws JsonProcessingException {
-        model.addAttribute("userInfo", userDetails);
+    public String viewHomePage(@CurrentUser CustomUserDetails userDetails, Model model, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
+        return userRepo.findById(userDetails.getUserId())
+                .map(user -> {
+                    model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("accountsList", user.getAccounts());
+                    model.addAttribute("accountTransactions", getTransactionsByAccounts(user.getAccounts()));
+                    model.addAttribute("pieCharData", new PieChart(user.getAccounts()));
 
-        ArrayList<Account> accounts = listAccounts(accountRepo, userDetails.getUserId());
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("accountTransactions", listTransactionsPerAccount(accounts, transactionRepo));
-        model.addAttribute("pieCharData", new PieChart(accounts));
+                    try {
+                        model.addAttribute("marketStatus", stockService.getMarketStatus());
+                        model.addAttribute("marketNews", stockService.getMarketNews());
+                    } catch (JsonProcessingException e) {
+                        System.out.println("API error");
+                    }
 
-        model.addAttribute("marketStatus", stockService.getMarketStatus());
-        model.addAttribute("marketNews", stockService.getMarketNews());
-
-        return "/home";
+                    return "/home";
+                })
+                .orElseGet(() ->invalidateSession(request, response));
     }
 
     @GetMapping("/profile")
-    public String viewProfile(@CurrentUser CustomUserDetails userDetails, Model model) {
-        model.addAttribute("userInfo", userDetails);
-        model.addAttribute("images", Arrays.asList("d.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png"));
-        model.addAttribute("accounts", listAccounts(accountRepo, userDetails.getUserId()));
+    public String viewProfile(@CurrentUser CustomUserDetails userDetails, Model model, HttpServletRequest request, HttpServletResponse response) {
 
-        return "/profile-edit";
+        return userRepo.findById(userDetails.getUserId())
+                .map(user -> {
+                    model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("accountsList", user.getAccounts());
+                    model.addAttribute("images", Arrays.asList("d.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png"));
+
+                    return "/profile-edit";
+                })
+                .orElseGet(() ->invalidateSession(request, response));
     }
 
     @PostMapping("/profile")
@@ -87,11 +87,13 @@ public class HomeController {
 
     @GetMapping("/deactivate")
     public String deactivateAccount(@CurrentUser CustomUserDetails userDetails, HttpServletRequest request, HttpServletResponse response) {
-        Optional<User> user_opt = userRepo.findById(userDetails.getUserId());
-        if (user_opt.isPresent()) {
-            userRepo.delete(user_opt.get());
-        }
+        userRepo.findById(userDetails.getUserId())
+                .ifPresent(user -> userRepo.delete(user));
 
+        return invalidateSession(request, response);
+    }
+
+    private String invalidateSession(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         ctxLogOut.logout(request, response, auth);

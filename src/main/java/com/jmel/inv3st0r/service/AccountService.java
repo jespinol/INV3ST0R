@@ -26,7 +26,7 @@ public class AccountService {
     }
 
     public static void updateAccount(Transaction transaction, AccountRepository repo) {
-        Account account = getAccount(repo, transaction.getAccountId());
+        Account account = getAccount(repo, transaction.getAccount().getId());
         if (account == null) {
             System.out.println("updateAccountTransaction: Account not found");
             return;
