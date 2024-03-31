@@ -223,7 +223,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="transaction : ${account.value}">
+                <tr th:each="transaction, iStat : ${account.value}" th:unless="${iStat.index > 5}">
                     <td th:text="${#temporals.format(transaction.getTransactionDate(), 'yyyy-MM-dd')}"></td>
                     <td th:style="${transaction.getTransactionType() == T(com.jmel.inv3st0r.enums.TransactionType).SELL ? 'color: #D9534F' : 'color: #5CB85C'}"
                         th:text="${transaction.getTransactionType()}"></td>
