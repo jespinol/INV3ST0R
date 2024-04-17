@@ -87,6 +87,7 @@ public class AccountController {
                     account.setAccountName(accountName);
                     account.setAccountDescription(accountDescription);
                     accountRepo.save(account);
+
                     return "redirect:/account/view?accountId=" + accountId;
                 })
                 .orElse("redirect:/home");

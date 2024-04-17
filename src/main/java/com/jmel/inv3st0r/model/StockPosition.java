@@ -1,19 +1,19 @@
 package com.jmel.inv3st0r.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "stock")
-public class Stock {
+@Table(name = "stock_position")
+public class StockPosition {
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "account_id")
+    private Account account;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private Long accountId;
-
-    @Column(nullable = false)
-    private Long userId;
 
     @Column(nullable = false)
     private String symbol;
@@ -33,22 +33,6 @@ public class Stock {
 
     public Long getId() {
         return id;
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getSymbol() {
@@ -81,5 +65,13 @@ public class Stock {
 
     public void setLastPrice(double lastPrice) {
         this.lastPrice = lastPrice;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

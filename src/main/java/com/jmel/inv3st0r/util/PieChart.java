@@ -24,7 +24,7 @@ public class PieChart {
         }
 
         if (cashBalance > 0) {
-            labels.add("Cash");
+            labels.add("Uninvested Cash");
             balances.add(cashBalance);
         }
 

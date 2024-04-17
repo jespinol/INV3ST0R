@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmel.inv3st0r.enums.MarketStatus;
 import com.jmel.inv3st0r.enums.TransactionType;
-import com.jmel.inv3st0r.model.Stock;
+import com.jmel.inv3st0r.model.StockPosition;
 import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.repository.StockRepository;
 import com.jmel.inv3st0r.util.MarketNews;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +23,9 @@ import static com.jmel.inv3st0r.enums.MarketStatus.*;
 
 @Service
 public class StockService {
+    @Autowired
+    private StockRepository stockRepo;
+
     @Value("${polygon.api.key}")
     private String apiKey;
 
@@ -109,10 +113,9 @@ public class StockService {
         return news;
     }
 
-    public static Stock createNewStockRecord(Transaction transaction) {
-        Stock stock = new Stock();
-        stock.setAccountId(transaction.getAccountId());
-        stock.setUserId(transaction.getUserId());
+    private StockPosition createNewStockRecord(Transaction transaction) {
+        StockPosition stock = new StockPosition();
+        stock.setAccount(transaction.getAccount());
         stock.setSymbol(transaction.getSymbol());
         stock.setCompany(transaction.getCompany());
         stock.setQuantity(transaction.getQuantity());
@@ -121,9 +124,9 @@ public class StockService {
         return stock;
     }
 
-    public static void updateStockRecord(Transaction transaction, StockRepository repo) {
-        Optional<Stock> stock_opt = repo.findBySymbolAndAccountId(transaction.getSymbol(), transaction.getAccountId());
-        Stock stock;
+    public void updateStockRecord(Transaction transaction) {
+        Optional<StockPosition> stock_opt = stockRepo.findBySymbolAndAccountId(transaction.getSymbol(), transaction.getAccount().getId());
+        StockPosition stock;
         if (stock_opt.isPresent()) {
             stock = stock_opt.get();
             if (transaction.getTransactionType() == TransactionType.BUY) {
@@ -135,6 +138,6 @@ public class StockService {
             stock = createNewStockRecord(transaction);
         }
 
-        repo.save(stock);
+        stockRepo.save(stock);
     }
 }

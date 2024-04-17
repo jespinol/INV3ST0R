@@ -3,19 +3,20 @@ package com.jmel.inv3st0r.controller;
 import com.jmel.inv3st0r.model.Account;
 import com.jmel.inv3st0r.model.Transaction;
 import com.jmel.inv3st0r.repository.AccountRepository;
-import com.jmel.inv3st0r.repository.BalanceRepository;
 import com.jmel.inv3st0r.repository.StockRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
-import jakarta.validation.Valid;
+import com.jmel.inv3st0r.service.AccountService;
+import com.jmel.inv3st0r.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.jmel.inv3st0r.enums.TransactionType.BUY;
 import static com.jmel.inv3st0r.enums.TransactionType.SELL;
-import static com.jmel.inv3st0r.service.AccountService.getOwnedStocks;
-import static com.jmel.inv3st0r.service.StockService.updateStockRecord;
 
 @Controller
 @RequestMapping("/transaction")
@@ -28,6 +29,12 @@ public class TransactionController {
 
     @Autowired
     private StockRepository stockRepo;
+
+    @Autowired
+    private StockService stockService;
+
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping("/fund")
     public String showFundForm(Model model, @RequestParam("accountId") Long accountId) {
@@ -52,10 +59,6 @@ public class TransactionController {
                     return "redirect:/account/view?accountId=" + accountId;
                 })
                 .orElse("redirect:/home");
-
-//        Balance balance = balanceRepo.findByAccountId(accountId).orElse(new Balance());
-//        balance.setCashBalance(balance.getCashBalance() + fundAmount);
-//        balanceRepo.save(balance);
     }
 
     @GetMapping("/purchase")
@@ -74,11 +77,11 @@ public class TransactionController {
     @PostMapping("/purchase")
     public String buyStock(Transaction transaction, @RequestParam("accountId") Long accountId) {
         transaction.setTransactionType(BUY);
-        transaction.setAccount(accountRepo.findById(accountId).get());
+        transaction.setAccount(accountRepo.findById(accountId).orElse(new Account()));
         transactionRepo.save(transaction);
-//        updateAccount(transaction, accountRepo);
-        updateStockRecord(transaction, stockRepo); // could be replaced by db query
-//        updateBalance(transaction, balanceRepo);
+
+        accountService.updateAccount(transaction);
+        stockService.updateStockRecord(transaction);
 
         return "redirect:/account/view?accountId=" + transaction.getAccount().getId();
     }
@@ -90,7 +93,7 @@ public class TransactionController {
                 .map(account -> {
                     model.addAttribute("accountInfo", account);
                     model.addAttribute("newTransaction", new Transaction());
-                    model.addAttribute("ownedStocks", getOwnedStocks(accountId, stockRepo));
+                    model.addAttribute("ownedStocks", stockRepo.findAllByAccountId(accountId));
 
                     return "/transaction-sell";
                 })
@@ -100,11 +103,11 @@ public class TransactionController {
     @PostMapping("/sell")
     public String sellStock(Transaction transaction, @RequestParam("accountId") Long accountId) {
         transaction.setTransactionType(SELL);
-        transaction.setAccount(accountRepo.findById(accountId).get());
+        transaction.setAccount(accountRepo.findById(accountId).orElseGet(Account::new));
         transactionRepo.save(transaction);
-//        updateAccount(transaction, accountRepo);
-//        updateStockRecord(transaction, stockRepo);
-//        updateBalance(transaction, balanceRepo);
+
+        accountService.updateAccount(transaction);
+        stockService.updateStockRecord(transaction);
 
         return "redirect:/account/view?accountId=" + transaction.getAccount().getId();
     }

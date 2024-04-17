@@ -14,7 +14,7 @@ import static com.jmel.inv3st0r.enums.TransactionType.BUY;
 public class BalanceService {
     public static Balance newAccountBalance(Account account) {
         Balance balance = new Balance();
-        balance.setUserId(account.getUserId());
+        balance.setUserId(account.getUser().getId());
         balance.setAccountId(account.getId());
         balance.setCashBalance(account.getCashBalance());
         balance.setInvestedBalance(account.getInvestedBalance());
@@ -22,7 +22,7 @@ public class BalanceService {
     }
 
     public static void updateBalance(Transaction transaction, BalanceRepository repo) {
-        Optional<Balance> balance_opt = repo.findByAccountId(transaction.getAccountId());
+        Optional<Balance> balance_opt = repo.findByAccountId(transaction.getAccount().getId());
         if (balance_opt.isPresent()) {
             Balance balance = balance_opt.get();
             double oldCash = balance.getCashBalance();

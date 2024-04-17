@@ -21,12 +21,4 @@ public class TransactionService {
         }
         return accountTransactions;
     }
-
-    public static ArrayList<Transaction> listTransactions(TransactionRepository repo, Long accountId, boolean showAll) {
-        if (showAll) {
-            return repo.findAllByAccountIdOrderByIdDesc(accountId);
-        }
-
-        return repo.findTop5ByAccountIdOrderByTransactionDateDesc(accountId);
-    }
 }
