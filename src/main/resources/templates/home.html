@@ -106,8 +106,13 @@
                     <div class="card shadow mb-4">
                         <div class="card-body" style="overflow-y: scroll;">
                             <div style="height: 30rem;">
-                                <tr th:each="accountTransaction : ${accountTransactions}">
+                                <tr th:if="${accountTransactions.size() > 0}" th:each="accountTransaction : ${accountTransactions}">
                                     <div th:replace="~{fragments :: txns-table-few(account=${accountTransaction})}"></div>
+                                </tr>
+                                <tr th:unless="${accountTransactions.size() > 0}">
+                                    <div>
+                                        <span>No data available</span>
+                                    </div>
                                 </tr>
                             </div>
                         </div>
