@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body id="page-top">
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <div th:replace="~{fragments :: sidebar}"></div>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <div th:replace="~{fragments :: topbar}"></div>
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <h1 class="h1 mb-4 text-gray-800">Notifications</h1>
+                <!-- All notifications -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTableNotifications" width="100%"
+                                   cellspacing="0">
+                                <tr th:each="notification : ${allNotifications}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3">
+                                                <div class="icon-circle" th:classappend="${notification.getType().color}">
+                                                    <i class="fas text-white"
+                                                       th:classappend="${notification.getType().icon}"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="text-gray-500" th:text="${#temporals.format(notification.getDate(), 'MMMM dd, yyyy HH:mm a')}"></div>
+                                                <span th:text="${notification.getMessage()}"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Main Content -->
+        <div th:replace="~{fragments :: footer}"></div>
+    </div>
+</div>
+<div th:replace="~{fragments :: scroll-to-top}"></div>
+<div th:replace="~{fragments :: logout-modal}"></div>
+<div th:replace="~{fragments :: js-core}"></div>
+<div th:replace="~{fragments :: js-table}"></div>
+</body>
+</html>

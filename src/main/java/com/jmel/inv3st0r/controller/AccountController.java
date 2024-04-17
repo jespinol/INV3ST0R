@@ -5,6 +5,7 @@ import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.CurrentUser;
 import com.jmel.inv3st0r.repository.UserRepository;
 import com.jmel.inv3st0r.security.CustomUserDetails;
+import com.jmel.inv3st0r.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,9 @@ public class AccountController {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping("/view")
     public String viewAccount(@CurrentUser CustomUserDetails userDetails, Model model, @RequestParam("accountId") Long accountId) {
 
@@ -29,6 +33,7 @@ public class AccountController {
                 .filter(account -> account.getUser().getId().equals(userDetails.getUserId()))
                 .map(account -> {
                     model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("recentNotifications", notificationService.getRecentNotifications(account.getUser().getId()));
                     model.addAttribute("accountsList", account.getUser().getAccounts());
                     model.addAttribute("accountInfo", account);
                     model.addAttribute("transactions", account.getTransactions());
@@ -44,6 +49,7 @@ public class AccountController {
         return userRepo.findById(userDetails.getUserId())
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
                     model.addAttribute("newAccount", new Account());
 
@@ -58,6 +64,7 @@ public class AccountController {
                 .map(user -> {
                     account.setUser(user);
                     accountRepo.save(account);
+                    notificationService.createNotification(account.getUser(), "Account %s created!".formatted(account.getAccountName()));
 
                     return "redirect:/account/view?accountId=" + account.getId();
                 })
@@ -71,6 +78,7 @@ public class AccountController {
                 .filter(account -> account.getUser().getId().equals(userDetails.getUserId()))
                 .map(account -> {
                     model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("recentNotifications", notificationService.getRecentNotifications(account.getUser().getId()));
                     model.addAttribute("accountsList", account.getUser().getAccounts());
                     model.addAttribute("accountInfo", account);
 
@@ -99,6 +107,7 @@ public class AccountController {
         return accountRepo.findById(accountId)
                 .filter(account -> account.getUser().getId().equals(userDetails.getUserId()))
                 .map(account -> {
+                    notificationService.createNotification(account.getUser(), "Account %s deleted!".formatted(account.getAccountName()));
                     accountRepo.delete(account);
 
                     return "redirect:/home";

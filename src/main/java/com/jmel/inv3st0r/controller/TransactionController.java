@@ -6,6 +6,7 @@ import com.jmel.inv3st0r.repository.AccountRepository;
 import com.jmel.inv3st0r.repository.StockRepository;
 import com.jmel.inv3st0r.repository.TransactionRepository;
 import com.jmel.inv3st0r.service.AccountService;
+import com.jmel.inv3st0r.service.NotificationService;
 import com.jmel.inv3st0r.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static com.jmel.inv3st0r.enums.TransactionType.BUY;
 import static com.jmel.inv3st0r.enums.TransactionType.SELL;
@@ -36,6 +40,9 @@ public class TransactionController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping("/fund")
     public String showFundForm(Model model, @RequestParam("accountId") Long accountId) {
 
@@ -55,6 +62,7 @@ public class TransactionController {
                 .map(account -> {
                     account.setCashBalance(account.getCashBalance() + fundAmount);
                     accountRepo.save(account);
+                    notificationService.createNotification(account, fundAmount);
 
                     return "redirect:/account/view?accountId=" + accountId;
                 })
@@ -82,6 +90,7 @@ public class TransactionController {
 
         accountService.updateAccount(transaction);
         stockService.updateStockRecord(transaction);
+        notificationService.createNotification(transaction);
 
         return "redirect:/account/view?accountId=" + transaction.getAccount().getId();
     }
@@ -108,6 +117,10 @@ public class TransactionController {
 
         accountService.updateAccount(transaction);
         stockService.updateStockRecord(transaction);
+        notificationService.createNotification(transaction);
+        if (transaction.getAccount().getCashBalance() < 100) {
+            notificationService.createNotification(transaction.getAccount().getUser(), "Account %s has low balance as of %s".formatted(transaction.getAccount().getAccountName(), DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDate.now())));
+        }
 
         return "redirect:/account/view?accountId=" + transaction.getAccount().getId();
     }

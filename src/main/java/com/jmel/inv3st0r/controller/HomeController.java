@@ -5,7 +5,9 @@ import com.jmel.inv3st0r.model.User;
 import com.jmel.inv3st0r.repository.CurrentUser;
 import com.jmel.inv3st0r.repository.UserRepository;
 import com.jmel.inv3st0r.security.CustomUserDetails;
+import com.jmel.inv3st0r.service.NotificationService;
 import com.jmel.inv3st0r.service.StockService;
+import com.jmel.inv3st0r.service.TransactionService;
 import com.jmel.inv3st0r.util.PieChart;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.jmel.inv3st0r.service.TransactionService.getTransactionsByAccounts;
+//import static com.jmel.inv3st0r.service.TransactionService.getTransactionsByAccounts;
 
 @Controller
 public class HomeController {
@@ -32,13 +34,20 @@ public class HomeController {
     @Autowired
     private StockService stockService;
 
+    @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping(value = {"/", "/home"})
     public String viewHomePage(@CurrentUser CustomUserDetails userDetails, Model model, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
         return userRepo.findById(userDetails.getUserId())
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
-                    model.addAttribute("accountTransactions", getTransactionsByAccounts(user.getAccounts()));
+                    model.addAttribute("accountTransactions", transactionService.getTransactionsByAccounts(user.getAccounts()));
                     model.addAttribute("pieCharData", new PieChart(user.getAccounts()));
 
                     try {
@@ -59,6 +68,7 @@ public class HomeController {
         return userRepo.findById(userDetails.getUserId())
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
                     model.addAttribute("images", Arrays.asList("d.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png"));
 
@@ -83,6 +93,22 @@ public class HomeController {
         }
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/notifications")
+    public String viewNotifications(@CurrentUser CustomUserDetails userDetails, Model model, HttpServletRequest request, HttpServletResponse response) {
+
+        return userRepo.findById(userDetails.getUserId())
+                .map(user -> {
+                    model.addAttribute("userInfo", userDetails);
+                    model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
+                    model.addAttribute("hasNewNotifications", notificationService.hasNewNotifications(user.getId()));
+                    model.addAttribute("allNotifications", notificationService.getAllNotifications(user.getId()));
+                    model.addAttribute("accountsList", user.getAccounts());
+
+                    return "/profile-notifications";
+                })
+                .orElseGet(() ->invalidateSession(request, response));
     }
 
     @GetMapping("/deactivate")

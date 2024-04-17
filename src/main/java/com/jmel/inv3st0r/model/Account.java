@@ -17,6 +17,9 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<StockPosition> positions = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -87,5 +90,13 @@ public class Account {
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
+    }
+
+    public List<StockPosition> getPositions() {
+        return positions;
+    }
+
+    public void setPositions(List<StockPosition> positions) {
+        this.positions = positions;
     }
 }
