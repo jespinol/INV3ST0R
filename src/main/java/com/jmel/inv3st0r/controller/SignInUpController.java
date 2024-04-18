@@ -36,7 +36,7 @@ public class SignInUpController {
         user.setPassword(encodedPassword);
         userRepo.save(user);
 
-        return "redirect:/login";
+        return "redirect:/login?registered";
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)

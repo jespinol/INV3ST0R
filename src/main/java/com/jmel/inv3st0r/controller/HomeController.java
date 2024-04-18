@@ -58,7 +58,7 @@ public class HomeController {
 
                     return "/home";
                 })
-                .orElseGet(() ->invalidateSession(request, response));
+                .orElseGet(() ->invalidateSession(request, response, "error"));
     }
 
     @GetMapping("/profile")
@@ -74,7 +74,7 @@ public class HomeController {
 
                     return "/profile-edit";
                 })
-                .orElseGet(() ->invalidateSession(request, response));
+                .orElseGet(() ->invalidateSession(request, response, "error"));
     }
 
     @PostMapping("/profile")
@@ -109,7 +109,7 @@ public class HomeController {
 
                     return "/profile-notifications";
                 })
-                .orElseGet(() ->invalidateSession(request, response));
+                .orElseGet(() ->invalidateSession(request, response, "error"));
     }
 
     @GetMapping("/deactivate")
@@ -117,14 +117,14 @@ public class HomeController {
         userRepo.findById(userDetails.getUserId())
                 .ifPresent(user -> userRepo.delete(user));
 
-        return invalidateSession(request, response);
+        return invalidateSession(request, response, "deactivated");
     }
 
-    private String invalidateSession(HttpServletRequest request, HttpServletResponse response) {
+    private String invalidateSession(HttpServletRequest request, HttpServletResponse response, String message) {
         SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         ctxLogOut.logout(request, response, auth);
 
-        return "redirect:/login";
+        return "redirect:/login?" + message;
     }
 }

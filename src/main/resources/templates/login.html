@@ -31,11 +31,20 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Log in</h1>
                                 </div>
-                                <div th:if="${param.error}" class="alert text-center alert-danger">
+                                <div th:if="${param.error}" class="alert text-center alert-warning">
                                     Invalid username and password.
                                 </div>
                                 <div th:if="${param.logout}" class="alert text-center alert-info">
                                     You have been logged out.
+                                </div>
+                                <div th:if="${param.registered}" class="alert text-center alert-success">
+                                    You have been registered. Please log in.
+                                </div>
+                                <div th:if="${param.deactivated}" class="alert text-center alert-secondary">
+                                    Your profile has been successfully deactivated.
+                                </div>
+                                <div th:if="${param.error}" class="alert text-center alert-warning">
+                                    Your session expired. Please log in again.
                                 </div>
                                 <form class="user" th:action="@{/login}" method="post">
                                     <div class="form-group">
