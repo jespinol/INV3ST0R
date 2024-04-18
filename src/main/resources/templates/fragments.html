@@ -94,7 +94,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                <span class="badge badge-danger badge-counter" th:text="${hasNewNotifications == true ? '!' : ''}"></span>
+                <span class="badge badge-danger badge-counter" th:text="${newNotificationCount > 0 ? (newNotificationCount > 5 ? '5+' : newNotificationCount) : ''}"></span>
             </a>
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="alertsDropdown">
@@ -102,7 +102,7 @@
                     Notifications
                 </h6>
                 <tr th:each="notification : ${recentNotifications}">
-                    <a class="dropdown-item d-flex align-items-center" href="#">
+                    <a class="dropdown-item d-flex align-items-center" href="profile-notifications.html" th:href="@{/notifications}">
                         <div class="mr-3">
                             <div class="icon-circle" th:classappend="${notification.getType().color}">
                                 <i class="fas text-white"
@@ -112,7 +112,7 @@
                         <div>
                             <div class="small text-gray-500"
                                  th:text="${#temporals.format(notification.getDate(), 'MMMM dd, yyyy HH:mm a')}"></div>
-                            <span th:text="${notification.getMessage()}"></span>
+                            <span th:text="${notification.getMessage()}" th:classappend="${notification.getSeen() == false ? 'font-weight-bold' : ''}"></span>
                         </div>
                     </a>
                 </tr>

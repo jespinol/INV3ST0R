@@ -28,6 +28,9 @@ public class Notification {
     @Column(nullable = false)
     private LocalDateTime date = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private boolean seen = false;
+
     public Long getId() {
         return id;
     }
@@ -66,5 +69,13 @@ public class Notification {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public boolean getSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean status) {
+        this.seen = status;
     }
 }

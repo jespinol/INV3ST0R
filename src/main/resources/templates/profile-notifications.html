@@ -24,14 +24,16 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="mr-3">
-                                                <div class="icon-circle" th:classappend="${notification.getType().color}">
+                                                <div class="icon-circle"
+                                                     th:classappend="${notification.getType().color}">
                                                     <i class="fas text-white"
                                                        th:classappend="${notification.getType().icon}"></i>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div class="text-gray-500" th:text="${#temporals.format(notification.getDate(), 'MMMM dd, yyyy HH:mm a')}"></div>
-                                                <span th:text="${notification.getMessage()}"></span>
+                                                <div class="text-gray-500"
+                                                     th:text="${#temporals.format(notification.getDate(), 'MMMM dd, yyyy HH:mm a')}"></div>
+                                                <span class="" th:text="${notification.getMessage()}" th:classappend="${notification.getSeen() == false ? 'font-weight-bold' : ''}"></span>
                                             </div>
                                         </div>
                                     </td>

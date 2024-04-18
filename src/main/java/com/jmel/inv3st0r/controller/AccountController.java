@@ -34,6 +34,7 @@ public class AccountController {
                 .map(account -> {
                     model.addAttribute("userInfo", userDetails);
                     model.addAttribute("recentNotifications", notificationService.getRecentNotifications(account.getUser().getId()));
+                    model.addAttribute("newNotificationCount", notificationService.getNewNotificationCount(account.getUser().getId()));
                     model.addAttribute("accountsList", account.getUser().getAccounts());
                     model.addAttribute("accountInfo", account);
                     model.addAttribute("transactions", account.getTransactions());
@@ -50,6 +51,7 @@ public class AccountController {
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
                     model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
+                    model.addAttribute("newNotificationCount", notificationService.getNewNotificationCount(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
                     model.addAttribute("newAccount", new Account());
 
@@ -79,6 +81,7 @@ public class AccountController {
                 .map(account -> {
                     model.addAttribute("userInfo", userDetails);
                     model.addAttribute("recentNotifications", notificationService.getRecentNotifications(account.getUser().getId()));
+                    model.addAttribute("newNotificationCount", notificationService.getNewNotificationCount(account.getUser().getId()));
                     model.addAttribute("accountsList", account.getUser().getAccounts());
                     model.addAttribute("accountInfo", account);
 

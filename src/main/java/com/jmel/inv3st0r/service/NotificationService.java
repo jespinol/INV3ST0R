@@ -18,20 +18,29 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepo;
 
-    public boolean hasNewNotifications(Long userId) {
-        return notificationRepo.existsByUserIdAndDateAfter(userId, LocalDateTime.now().minusMinutes(5));
+    public int getNewNotificationCount(Long userId) {
+        return notificationRepo.findAllByUserIdOrderByDateDesc(userId).stream()
+                .filter(notification -> !notification.getSeen())
+                .toList().size();
+    }
+
+    public void markAllAsSeen(Long userId) {
+        List<Notification> notifications = notificationRepo.findAllByUserIdOrderByDateDesc(userId);
+        notifications.forEach(n -> n.setSeen(true));
+        notificationRepo.saveAll(notifications);
     }
 
     public List<Notification> getRecentNotifications(Long userId) {
         return notificationRepo.findAllByUserIdOrderByDateDesc(userId).stream()
-                .filter(notification -> notification.getDate().isBefore(LocalDateTime.now().minusMinutes(2)))
+                .filter(notification -> notification.getDate().isBefore(LocalDateTime.now()))
                 .limit(5)
                 .toList();
     }
 
     public List<Notification> getAllNotifications(Long userId) {
+
         return notificationRepo.findAllByUserIdOrderByDateDesc(userId).stream()
-                .filter(notification -> notification.getDate().isBefore(LocalDateTime.now().minusMinutes(2)))
+                .filter(notification -> notification.getDate().isBefore(LocalDateTime.now()))
                 .toList();
     }
 

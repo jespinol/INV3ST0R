@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Arrays;
 import java.util.Optional;
 
-//import static com.jmel.inv3st0r.service.TransactionService.getTransactionsByAccounts;
-
 @Controller
 public class HomeController {
     @Autowired
@@ -46,6 +44,7 @@ public class HomeController {
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
                     model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
+                    model.addAttribute("newNotificationCount", notificationService.getNewNotificationCount(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
                     model.addAttribute("accountTransactions", transactionService.getTransactionsByAccounts(user.getAccounts()));
                     model.addAttribute("pieCharData", new PieChart(user.getAccounts()));
@@ -69,6 +68,7 @@ public class HomeController {
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
                     model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
+                    model.addAttribute("newNotificationCount", notificationService.getNewNotificationCount(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
                     model.addAttribute("images", Arrays.asList("d.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png"));
 
@@ -102,8 +102,9 @@ public class HomeController {
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
                     model.addAttribute("recentNotifications", notificationService.getRecentNotifications(user.getId()));
-                    model.addAttribute("hasNewNotifications", notificationService.hasNewNotifications(user.getId()));
                     model.addAttribute("allNotifications", notificationService.getAllNotifications(user.getId()));
+                    notificationService.markAllAsSeen(user.getId());
+                    model.addAttribute("newNotificationCount", notificationService.getNewNotificationCount(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
 
                     return "/profile-notifications";
