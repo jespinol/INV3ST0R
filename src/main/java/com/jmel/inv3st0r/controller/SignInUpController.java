@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @Controller
 public class SignInUpController {
@@ -31,9 +34,16 @@ public class SignInUpController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-
         userRepo.save(user);
 
         return "redirect:/login";
     }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public String handleConstraintViolation(Model model) {
+        model.addAttribute("emailExists", true);
+
+        return showRegistrationForm(model);
+    }
+
 }

@@ -26,7 +26,12 @@
                         </div>
                         <hr>
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Create an account</h1>
+                            <h1 class="h4 text-gray-900 mb-4">Create a new profile</h1>
+                        </div>
+                        <div th:if="${emailExists}" class="alert text-center alert-danger">
+                            This email is already registered.
+                            <br>
+                            Please log in or use a different email for registration.
                         </div>
                         <form th:action="@{/register}" th:object="${user}"
                               method="post" class="user">
