@@ -12,6 +12,7 @@ import com.jmel.inv3st0r.util.MarketNews;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
@@ -33,18 +34,33 @@ public class StockService {
 
     public String searchStock(String query) {
         String url = "https://api.polygon.io/v3/reference/tickers?search=" + query + "&apiKey=" + apiKey;
-        return restTemplate.getForObject(url, String.class);
+        try {
+            return restTemplate.getForObject(url, String.class);
+        } catch (HttpClientErrorException e) {
+            System.out.println("API error" + e);
+            return "";
+        }
     }
 
     public String getStockPrice(String symbol) {
         String url = "https://api.polygon.io/v2/aggs/ticker/" + symbol + "/prev?apiKey=" + apiKey;
-        return restTemplate.getForObject(url, String.class);
+        try {
+            return restTemplate.getForObject(url, String.class);
+        } catch (HttpClientErrorException e) {
+            System.out.println("API error" + e);
+            return "";
+        }
     }
 
     public HashMap<String, MarketStatus> getMarketStatus() throws JsonProcessingException {
         String url = "https://api.polygon.io/v1/marketstatus/now?apiKey=" + apiKey;
-        String response = restTemplate.getForObject(url, String.class);
-        return parseMarketStatus(response);
+        try {
+            String response = restTemplate.getForObject(url, String.class);
+            return parseMarketStatus(response);
+        } catch (HttpClientErrorException e) {
+            System.out.println("API error" + e);
+            return new HashMap<>();
+        }
     }
 
     private static HashMap<String, MarketStatus> parseMarketStatus(String jsonResponse) throws JsonProcessingException {
@@ -80,8 +96,13 @@ public class StockService {
 
     public ArrayList<MarketNews> getMarketNews() throws JsonProcessingException {
         String url = "https://api.polygon.io/v2/reference/news?apiKey=" + apiKey;
-        String response = restTemplate.getForObject(url, String.class);
-        return parseMarketNews(response);
+        try {
+            String response = restTemplate.getForObject(url, String.class);
+            return parseMarketNews(response);
+        } catch (HttpClientErrorException e) {
+            System.out.println("API error" + e);
+            return new ArrayList<>();
+        }
     }
 
     private ArrayList<MarketNews> parseMarketNews(String response) throws JsonProcessingException {

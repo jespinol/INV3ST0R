@@ -21,7 +21,7 @@
                     <h4>Markets</h4>
                 </div>
                 <div class="row">
-                    <tr th:each="market : ${marketStatus}">
+                    <tr th:if="${marketStatus.size() > 0}" th:each="market : ${marketStatus}">
                         <div class="col mb-4" th:with="status=${market.getValue()}">
                             <div class="card shadow h-100 py-2"
                                  th:classappend="${status == T(com.jmel.inv3st0r.enums.MarketStatus).CLOSED} ? 'border-left-danger' : (${status == T(com.jmel.inv3st0r.enums.MarketStatus).OPEN} ? 'border-left-success': 'border-left-warning')">
@@ -39,6 +39,20 @@
                             </div>
                         </div>
                     </tr>
+                    <div th:unless="${marketStatus.size() > 0}" class="col mb-4">
+                        <div class="card shadow h-100 py-2 border-left-dark">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1 text-dark">Error</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">Could not retrieve market
+                                            status
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <h4>My investments</h4>
@@ -52,7 +66,7 @@
                             </div>
                             <div class="card-body" style="overflow-y: scroll;">
                                 <div style="height: 20rem;">
-                                    <tr th:each="news : ${marketNews}">
+                                    <tr th:if="${marketNews.size() > 0}" th:each="news : ${marketNews}">
                                         <div class="table-responsive">
                                             <table class="table table-bordered" width="100%" cellspacing="0">
                                                 <tbody>
@@ -69,6 +83,17 @@
                                             </table>
                                         </div>
                                     </tr>
+                                    <div th:unless="${marketNews.size() > 0}" class="table-responsive">
+                                        <table class="table table-bordered" width="100%" cellspacing="0">
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span>Error: could not retrieve market news</span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -106,7 +131,8 @@
                     <div class="card shadow mb-4">
                         <div class="card-body" style="overflow-y: scroll;">
                             <div style="height: 30rem;">
-                                <tr th:if="${accountTransactions.size() > 0}" th:each="accountTransaction : ${accountTransactions}">
+                                <tr th:if="${accountTransactions.size() > 0}"
+                                    th:each="accountTransaction : ${accountTransactions}">
                                     <div th:replace="~{fragments :: txns-table-few(account=${accountTransaction})}"></div>
                                 </tr>
                                 <tr th:unless="${accountTransactions.size() > 0}">
