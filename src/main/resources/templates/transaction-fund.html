@@ -82,8 +82,10 @@
                 function fundButtonAction() {
                     const button = document.getElementById('fundButton');
                     const total = parseFloat(document.getElementById('fundAmountValue').value);
+                    const hasAccountInfo = document.getElementById('routingNumber').value !== '' && document.getElementById('accountNumber').value !== '' && document.querySelector('input[name="accountType"]:checked') !== null;
+                    console.log(hasAccountInfo);
 
-                    if (total > 0.00) {
+                    if (total > 0.00 && hasAccountInfo) {
                         if (button.textContent === 'Fund') {
                             toggleButton(button, true);
                             return;
@@ -91,7 +93,11 @@
                             document.getElementById('accountFundForm').submit();
                         }
                     } else {
-                        alert('Please fund your account with $0.01 or more.');
+                        if (!hasAccountInfo) {
+                            alert('Please provide account information.');
+                        } else {
+                            alert('Please fund your account with $0.01 or more.');
+                        }
                     }
 
                     toggleButton(button, false);
