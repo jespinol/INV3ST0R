@@ -58,7 +58,7 @@ public class HomeController {
 
                     return "/home";
                 })
-                .orElseGet(() ->invalidateSession(request, response, "error"));
+                .orElseGet(() ->invalidateSession(request, response, "authError"));
     }
 
     @GetMapping("/profile")
@@ -74,7 +74,7 @@ public class HomeController {
 
                     return "/profile-edit";
                 })
-                .orElseGet(() ->invalidateSession(request, response, "error"));
+                .orElseGet(() ->invalidateSession(request, response, "authError"));
     }
 
     @PostMapping("/profile")
@@ -109,7 +109,7 @@ public class HomeController {
 
                     return "/profile-notifications";
                 })
-                .orElseGet(() ->invalidateSession(request, response, "error"));
+                .orElseGet(() ->invalidateSession(request, response, "authError"));
     }
 
     @GetMapping("/deactivate")

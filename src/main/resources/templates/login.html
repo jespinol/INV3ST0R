@@ -43,7 +43,7 @@
                                 <div th:if="${param.deactivated}" class="alert text-center alert-secondary">
                                     Your profile has been successfully deactivated.
                                 </div>
-                                <div th:if="${param.error}" class="alert text-center alert-warning">
+                                <div th:if="${param.authError}" class="alert text-center alert-danger">
                                     Your session expired. Please log in again.
                                 </div>
                                 <form class="user" th:action="@{/login}" method="post">
