@@ -63,9 +63,13 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Bean(name = "userId")
-    public Long getUserId() {return user.getId();}
+    public Long getUserId() {
+        return user.getId();
+    }
 
-    public String getPfp() {return user.getPfp();}
+    public String getPfp() {
+        return user.getPfp();
+    }
 
     public void updateUserInfo(User user) {
         if (user != null) {
