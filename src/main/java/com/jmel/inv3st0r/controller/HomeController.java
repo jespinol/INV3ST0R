@@ -39,7 +39,7 @@ public class HomeController {
     private NotificationService notificationService;
 
     @GetMapping(value = {"/", "/home"})
-    public String viewHomePage(@CurrentUser CustomUserDetails userDetails, Model model, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
+    public String viewHomePage(@CurrentUser CustomUserDetails userDetails, Model model, HttpServletRequest request, HttpServletResponse response) {
         return userRepo.findById(userDetails.getUserId())
                 .map(user -> {
                     model.addAttribute("userInfo", userDetails);
@@ -56,7 +56,7 @@ public class HomeController {
                         System.out.println("API error");
                     }
 
-                    return "/home";
+                    return "home";
                 })
                 .orElseGet(() ->invalidateSession(request, response, "authError"));
     }
@@ -72,7 +72,7 @@ public class HomeController {
                     model.addAttribute("accountsList", user.getAccounts());
                     model.addAttribute("images", Arrays.asList("d.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png"));
 
-                    return "/profile-edit";
+                    return "profile-edit";
                 })
                 .orElseGet(() ->invalidateSession(request, response, "authError"));
     }
@@ -92,7 +92,7 @@ public class HomeController {
             user_opt.ifPresent(userDetails::updateUserInfo);
         }
 
-        return "redirect:/home";
+        return "redirect:home";
     }
 
     @GetMapping("/notifications")
@@ -107,7 +107,7 @@ public class HomeController {
                     model.addAttribute("newNotificationCount", notificationService.getNewNotificationCount(user.getId()));
                     model.addAttribute("accountsList", user.getAccounts());
 
-                    return "/profile-notifications";
+                    return "profile-notifications";
                 })
                 .orElseGet(() ->invalidateSession(request, response, "authError"));
     }

@@ -19,14 +19,14 @@ public class SignInUpController {
 
     @GetMapping("/login")
     public String showLoginForm() {
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
 
-        return "/profile-new";
+        return "profile-new";
     }
 
     @PostMapping("/register")

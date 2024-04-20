@@ -39,7 +39,7 @@ public class AccountController {
                     model.addAttribute("accountInfo", account);
                     model.addAttribute("transactions", account.getTransactions());
 
-                    return "/account-view";
+                    return "account-view";
                 })
                 .orElse("redirect:/home");
     }
@@ -55,7 +55,7 @@ public class AccountController {
                     model.addAttribute("accountsList", user.getAccounts());
                     model.addAttribute("newAccount", new Account());
 
-                    return "/account-new";
+                    return "account-new";
                 })
                 .orElse("redirect:/home");
     }
@@ -85,7 +85,7 @@ public class AccountController {
                     model.addAttribute("accountsList", account.getUser().getAccounts());
                     model.addAttribute("accountInfo", account);
 
-                    return "/account-edit";
+                    return "account-edit";
                 })
                 .orElse("redirect:/home");
     }

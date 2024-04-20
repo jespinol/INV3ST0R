@@ -50,7 +50,7 @@ public class TransactionController {
                 .map(account -> {
                     model.addAttribute("accountInfo", account);
 
-                    return "/transaction-fund";
+                    return "transaction-fund";
                 })
                 .orElse("redirect:/home");
     }
@@ -77,7 +77,7 @@ public class TransactionController {
                     model.addAttribute("accountInfo", account);
                     model.addAttribute("newTransaction", new Transaction());
 
-                    return "/transaction-purchase";
+                    return "transaction-purchase";
                 })
                 .orElse("redirect:/home");
     }
@@ -104,7 +104,7 @@ public class TransactionController {
                     model.addAttribute("newTransaction", new Transaction());
                     model.addAttribute("ownedStocks", stockRepo.findAllByAccountId(accountId));
 
-                    return "/transaction-sell";
+                    return "transaction-sell";
                 })
                 .orElse("redirect:/home");
     }
