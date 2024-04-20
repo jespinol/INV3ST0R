@@ -11,6 +11,7 @@ The goal of this project is to develop web application to help keep track of a u
 INV3$T0R is a Spring Boot web application that allows users to simulate stock trading. Users can create an account, log in, and start trading stocks. The application provides a platform to simulate buying and selling stocks, view the user’s portfolio, and track the user’s investment history.
 
 ## Description
+Several features have been implemented using Spring Boot, including user authentication, user account management, investment account management, and stock trading simulation. The application uses a MySQL database to store user and investment account data. The application also uses the Polygon.io Stocks API to get stock data, including stock prices and market news.
 ### Features
 - Ability to create, edit, and delete user accounts
 - Basic user authentication provided by Spring Security
@@ -50,7 +51,7 @@ For demonstration purposes, the following credentials can be used to log in to t
 - Password: `investor`
 
 ## Known issues
-- GCP App Engine and Cloud SQL are set up with the lowest configurations possible causing the application to be slow and unresponsive at times. On certain occasions this will log out the user.
+- GCP App Engine and Cloud SQL are set up with the lowest configurations possible causing the application to be slow and unresponsive at times.
 - The application is not optimized for mobile devices and may not display correctly on smaller screens.
 - The application does not have a feature to change or reset a user's password.
 - The application uses Polygon.ai's free-tier API which has a limit of 5 requests per minute. This may cause the application to fail to get stock data temporarily. 
@@ -59,3 +60,5 @@ For demonstration purposes, the following credentials can be used to log in to t
 ***
 
 #### Created by [Jose M. Espinola Lopez](https://github.com/jespinol)
+<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
+<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px'></span>
