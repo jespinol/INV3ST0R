@@ -45,6 +45,16 @@ In your browser, Navigate to the [home page](http://inv3st0r.ue.r.appspot.com) (
 
 From the login page, create a new account or log in with your credentials, create or navigate to your investment account, and start using the application to simulate stock trading.
 
+For demonstration purposes, the following credentials can be used to log in to the *deployed* application:
+- Email: `1@test.com`
+- Password: `investor`
+
+## Known issues
+- GCP App Engine and Cloud SQL are set up with the lowest configurations possible causing the application to be slow and unresponsive at times. On certain occasions this will log out the user.
+- The application is not optimized for mobile devices and may not display correctly on smaller screens.
+- The application does not have a feature to change or reset a user's password.
+- The application uses Polygon.ai's free-tier API which has a limit of 5 requests per minute. This may cause the application to fail to get stock data temporarily. 
+
 <br></br>
 ***
 
