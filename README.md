@@ -1,47 +1,49 @@
-# Welcome to My Spring Portfolio
+# Welcome to INV3$T0R
 ***
 
 ## Task
-TODO - What is the problem? And where is the challenge?
+[Spring Boot](https://spring.io/projects/spring-boot) simplifies the development of back-end applications with Java, offering a wide range of pre-configured components that reduce development time, increase productivity, and allow developers to focus more on business logic rather than boilerplate code.
+
+Learning Spring Boot can be challenging for beginners. It involves understanding concepts like dependency injection, RESTful services, and database integration. However, with a solid grasp of Java fundamentals and by following tutorials and practical projects, beginners can become proficient in Spring Boot.
+
+The goal of this project is to develop web application to help keep track of a users’ investments by offering a platform to simulate stock trading.
+
+INV3$T0R is a Spring Boot web application that allows users to simulate stock trading. Users can create an account, log in, and start trading stocks. The application provides a platform to simulate buying and selling stocks, view the user’s portfolio, and track the user’s investment history.
 
 ## Description
-TODO - How have you solved the problem?
+### Features
+- Ability to create, edit, and delete user accounts
+- Basic user authentication provided by Spring Security
+- Persistent user data storage using a MySQL database
+- A home view with summary of all investment accounts as well as current state and news of US markets (taken from [The Polygon.io Stocks API](https://polygon.io/docs/stocks/getting-started))
+- A detailed view of each investment account
+- Ability to create, edit, and delete investment account
+- Ability to "add funds" to an investment account
+- Sortable (by dollar amount, stock ticker, date, etc.) and searchable transaction history for each account
+- Ability to "buy and sell" stocks using recent prices (taken from the previous close of a specified stock ticker [The Polygon.io Stocks API](https://polygon.io/docs/stocks/getting-started))
+- A simple notification system to alert users of new transactions and account updates
+- A responsive user interface (created by [Start Bootstrap](https://startbootstrap.com/theme/sb-admin-2/))
+
+### Tech Stack
+- Maven
+- Java
+- Spring Boot
+- JavaScript
+- HTML
+- CSS
+- Thymeleaf
+- Bootstrap 4
+- MySQL
+- GCP
 
 ## Installation
-### Pre-requisites
-#### Database
-INV3ST0R requires mySQL 8.0.27+. Additional information to install and run mySQL server can be found [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/) and [here](https://www.mysql.com/products/workbench/)
+INV3$T0R has been deployed on Google Cloud Platform and can be [accessed here](http://inv3st0r.ue.r.appspot.com). Alternatively, a local instance can be run locally as described [here](README_LOCAL.md).
 
-Once mySQL is installed and running, you must create the required database. 
-First, log into mySQL:
-```shell
-sudo /path/to/mysql --password
-```
-You may need to enter your OS admin password, followed by the mySQL root password. 
-
-Then, to create the database run the following commands:
-```sql
-CREATE DATABASE IF NOT EXISTS inv3st0r;
-CREATE USER IF NOT EXISTS 'inv3st0r'@'%' IDENTIFIED BY 'password';
-GRANT ALL ON inv3st0r.* TO 'inv3st0r'@'%';
-```
-#### Other Dependencies
-- Java 21.0.2+
-- 
-- Gradle 8.7+
-
-#### Download and launch the application
-Clone the repository
-`git clone https://github.com/jespinol/inv3st0r.git && cd inv3st0r`
-From the repository root, run
-`gradle bootRun`
-This will start the application on port 8080.
 
 ## Usage
-Navigate to `http://localhost:8080` in your browser to access the application.
+In your browser, Navigate to the [home page](http://inv3st0r.ue.r.appspot.com) (or http://localhost:8080 if running a local instance) to access the application.
 
-From the login page, create a new account or log in with your credentials, and start using the application to simulate stock trading.
-
+From the login page, create a new account or log in with your credentials, create or navigate to your investment account, and start using the application to simulate stock trading.
 
 <br></br>
 ***
