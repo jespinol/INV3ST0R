@@ -28,10 +28,10 @@
                             <input type="hidden" id="fundAmountValue" name="fundAmount">
                         </div>
                     </div>
-                    <div class="font-weight-bold">Account info</div>
+                    <div class="font-weight-bold">Fake account info</div>
                     <div class="row mb-3">
                         <div class="col">
-                            Routing number
+                            Fake routing number
                         </div>
                         <div class="col">
                             <input type="text" id="routingNumber" name="routingNumber" class="form-control" required>
@@ -39,7 +39,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            Account number
+                            Fake account number
                         </div>
                         <div class="col">
                             <input type="text" id="accountNumber" name="accountNumber" class="form-control" required>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            Account type
+                            Fake account type
                         </div>
                         <div class="col" style="display: flex; align-items: center;">
                             <input type="radio" id="typeChecking" name="accountType" value="checking"
@@ -94,7 +94,7 @@
                         }
                     } else {
                         if (!hasAccountInfo) {
-                            alert('Please provide account information.');
+                            alert('Please provide account information (do not use real information).');
                         } else {
                             alert('Please fund your account with $0.01 or more.');
                         }
