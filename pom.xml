@@ -70,14 +70,14 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.google.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-gcp-starter</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>com.google.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -88,13 +88,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-<!--			<dependency>-->
-<!--				<groupId>com.google.cloud</groupId>-->
-<!--				<artifactId>spring-cloud-gcp-dependencies</artifactId>-->
-<!--				<version>${spring-cloud-gcp.version}</version>-->
-<!--				<type>pom</type>-->
-<!--				<scope>import</scope>-->
-<!--			</dependency>-->
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>spring-cloud-gcp-dependencies</artifactId>
+				<version>${spring-cloud-gcp.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -104,19 +104,19 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>com.google.cloud.tools</groupId>-->
-<!--				<artifactId>appengine-maven-plugin</artifactId>-->
-<!--				<version>2.7.0</version>-->
-<!--				<configuration>-->
-<!--					<deploy.version>GCLOUD_CONFIG</deploy.version>-->
-<!--				</configuration>-->
-<!--			</plugin>-->
-<!--			<plugin>-->
-<!--				<groupId>org.eclipse.jetty</groupId>-->
-<!--				<artifactId>jetty-maven-plugin</artifactId>-->
-<!--				<version>9.3.7.v20160115</version>-->
-<!--			</plugin>-->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>2.7.0</version>
+				<configuration>
+					<deploy.version>GCLOUD_CONFIG</deploy.version>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.3.7.v20160115</version>
+			</plugin>
 		</plugins>
 	</build>
 
