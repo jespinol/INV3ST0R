@@ -38,7 +38,7 @@ Several features have been implemented using Spring Boot, including user authent
 - GCP
 
 ## Installation
-INV3$T0R has been deployed on Google Cloud Platform and can be [accessed here](http://inv3st0r.ue.r.appspot.com). Alternatively, a local instance can be run locally as described [here](README_LOCAL.md).
+~~INV3$T0R has been deployed on Google Cloud Platform and can be [accessed here](http://inv3st0r.ue.r.appspot.com)~~. Alternatively, a local instance can be run locally as described [here](README_LOCAL.md).
 
 
 ## Usage
